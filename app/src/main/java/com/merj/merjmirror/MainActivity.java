@@ -3,7 +3,7 @@ package com.merj.merjmirror;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-/* Created By Eric Weiss */
+/* Created By Eric Weiss snd James Gabriel*/
 
 public class MainActivity extends AppCompatActivity {
 
