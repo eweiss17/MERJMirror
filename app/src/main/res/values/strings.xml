@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">MERJ Mirror</string>
     <string name="ZoneChoiceWeather">Weather</string>
+
+    <!-- This is in progress / Subject to change -->
+    <string-array name="preferences_array">
+        <item>Weather</item>
+        <item>Calendar</item>
+        <item>Notes</item>
+        <item>Maps</item>
+        <item>Clock</item>
+        <item>Stocks</item>
+        <item>Reminders</item>
+        <item>Horoscope</item>
+        <item>Comics</item>
+    </string-array>
+
 </resources>

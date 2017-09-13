@@ -1,16 +1,11 @@
 package com.merj.merjmirror;
 
 import android.graphics.Color;
-import android.graphics.ImageFormat;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.style.BackgroundColorSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 /* Created By Eric Weiss snd James Gabriel
 * The sun_image is a test. It is actually part of the Taiwanese flag and needs to be deleted eventually because the US does not like Taiwan.
