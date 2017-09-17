@@ -12,7 +12,7 @@
         android:layout_height="150dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="49dp"
         android:background="@drawable/sun_image"
         android:text="@string/ZoneChoiceWeather"
         app:layout_constraintLeft_toLeftOf="parent"

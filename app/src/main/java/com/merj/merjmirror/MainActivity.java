@@ -11,12 +11,9 @@ import android.widget.Spinner;
 
 /* Created By Eric Weiss snd James Gabriel
 * The sun_image is a test. It is actually part of the Taiwanese flag and needs to be deleted eventually because the US does not like Taiwan.
-* Upgraded to api 21 to make our lives somewhat easier
-* the layout is a mess right now sorry*/
+* must account for when the app closes and opens, changes must be saved*/
 
 public class MainActivity extends AppCompatActivity {
-
-    //Drawable SunImage = getResources().getDrawable(R.drawable.sun_image,null); //problem line
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +34,21 @@ public class MainActivity extends AppCompatActivity {
         Spinner spinner9 = (Spinner) findViewById(R.id.spinner9);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+        ArrayAdapter<CharSequence> PreferenceNames = ArrayAdapter.createFromResource(this,
                 R.array.preferences_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        PreferenceNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         //Same here I know it looks bad
-        spinner.setAdapter(adapter);
-        spinner2.setAdapter(adapter);
-        spinner3.setAdapter(adapter);
-        spinner4.setAdapter(adapter);
-        spinner5.setAdapter(adapter);
-        spinner6.setAdapter(adapter);
-        spinner7.setAdapter(adapter);
-        spinner8.setAdapter(adapter);
-        spinner9.setAdapter(adapter);
-
+        spinner.setAdapter(PreferenceNames);
+        spinner2.setAdapter(PreferenceNames);
+        spinner3.setAdapter(PreferenceNames);
+        spinner4.setAdapter(PreferenceNames);
+        spinner5.setAdapter(PreferenceNames);
+        spinner6.setAdapter(PreferenceNames);
+        spinner7.setAdapter(PreferenceNames);
+        spinner8.setAdapter(PreferenceNames);
+        spinner9.setAdapter(PreferenceNames);
     }
 
     public void onClickTopMiddle(View view){
@@ -61,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         // fuck me, this just needed to be public for the button to access it
         // change color to background image: sun, newspaper, etc.
         Button TopMiddleZoneButton = (Button) view;
-        TopMiddleZoneButton.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.MULTIPLY);
+        TopMiddleZoneButton.setBackground(getDrawable(R.drawable.sun_image));
     }
 
 }
