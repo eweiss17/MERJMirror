@@ -1,12 +1,20 @@
 package com.merj.merjmirror;
 
+import android.content.ClipData;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 
 /* Created By Eric Weiss snd James Gabriel
@@ -21,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
 
         //NOT MAIN, I set it to the preference grid view layout
         setContentView(R.layout.preference_layout);
+
+        CreateSpinners();
+
+        StartupRoutine();
+    }
+
+    private void CreateSpinners(){
 
         //I will fix this to look better later, right now this works.
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -49,15 +64,53 @@ public class MainActivity extends AppCompatActivity {
         spinner7.setAdapter(PreferenceNames);
         spinner8.setAdapter(PreferenceNames);
         spinner9.setAdapter(PreferenceNames);
+
+        //Declares a listener object and passes one of the spinners
+        YourItemSelectedListener spinnerListener = new YourItemSelectedListener();
+
+        spinner2.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner2, spinner2, 0, 0);
+        // only passes the spinner. The numbers are irrelevant afaik.
     }
 
-    public void onClickTopMiddle(View view){
-        //insert pop up menu here. Not sure whether this would be a fragment or menu
+    private void StartupRoutine() {
+        //check to see if first time user
+        //if true, run setup
+        //if false, continue
+    }
+    
+    //Declares a class used to listen to which spinner item is selected
+    private class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
-        // fuck me, this just needed to be public for the button to access it
-        // change color to background image: sun, newspaper, etc.
-        Button TopMiddleZoneButton = (Button) view;
-        TopMiddleZoneButton.setBackground(getDrawable(R.drawable.sun_image));
+        public void onItemSelected(AdapterView<?> spinner, View view, int pos, long id) {
+
+            String ItemName = spinner.getSelectedItem().toString();
+
+            switch (ItemName) {
+                //case "Empty": spinner.setBackgroundColor(555555);
+                case "Weather": view.setBackground(getDrawable(R.drawable.weather));
+                    break;
+                case "Calendar": view.setBackground(getDrawable(R.drawable.calendar));
+                    break;
+                case "Horoscope": view.setBackground(getDrawable(R.drawable.horoscope));
+                    break;
+                case "Comics": view.setBackground(getDrawable(R.drawable.comics));
+                    break;
+                case "News": view.setBackground(getDrawable(R.drawable.news));
+                    break;
+                case "Reminders": view.setBackground(getDrawable(R.drawable.notes));
+                    break;
+                case "Stocks": view.setBackground(getDrawable(R.drawable.stocks));
+                    break;
+                case "Clock": view.setBackground(getDrawable(R.drawable.clock));
+                    break;
+                default: break;
+            }
+        }
+
+        public void onNothingSelected(AdapterView parent) {
+            // This needs to be included. We won't use this though.
+        }
     }
 
 }

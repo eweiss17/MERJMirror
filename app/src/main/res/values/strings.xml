@@ -2,12 +2,14 @@
     <string name="app_name">MERJ Mirror</string>
     <string name="ZoneChoiceWeather">Weather</string>
 
-    <!-- This is in progress / Subject to change -->
+    <!-- This is in progress / Subject to change
+        <item>Maps</item>      No way this will appear on the mirror
+        <item>Notes</item>     What's the difference between a note and reminder?
+    -->
     <string-array name="preferences_array">
+        <item>Empty</item>
         <item>Weather</item>
         <item>Calendar</item>
-        <item>Notes</item>
-        <item>Maps</item>
         <item>Clock</item>
         <item>Stocks</item>
         <item>Reminders</item>

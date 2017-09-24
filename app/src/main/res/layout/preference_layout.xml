@@ -8,30 +8,32 @@
 
     <Spinner
         android:id="@+id/spinner"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="0"
-        android:layout_row="0"
-        android:background="@android:drawable/btn_default"/>
+        android:layout_row="0" />
 
     <Spinner
         android:id="@+id/spinner2"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="1"
-        android:layout_row="0"
-        android:background="@android:drawable/btn_default"/>
+        android:layout_row="0" />
 
     <Spinner
         android:id="@+id/spinner3"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="2"
         android:layout_row="0"
-        android:background="@android:drawable/btn_default"/>
+        />
 
     <Spinner
         android:id="@+id/spinner4"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="0"
@@ -39,6 +41,7 @@
 
     <Spinner
         android:id="@+id/spinner5"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="1"
@@ -46,6 +49,7 @@
 
     <Spinner
         android:id="@+id/spinner6"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="2"
@@ -53,6 +57,7 @@
 
     <Spinner
         android:id="@+id/spinner7"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="0"
@@ -60,6 +65,7 @@
 
     <Spinner
         android:id="@+id/spinner8"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="1"
@@ -67,6 +73,7 @@
 
     <Spinner
         android:id="@+id/spinner9"
+        style="@style/SpinnerWithNoArrow"
         android:layout_width="137dp"
         android:layout_height="170dp"
         android:layout_column="2"

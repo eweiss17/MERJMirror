@@ -6,38 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.merj.merjmirror.MainActivity">
 
-    <Button
-        android:id="@+id/TopLeftZoneButton"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="49dp"
-        android:background="@drawable/sun_image"
-        android:text="@string/ZoneChoiceWeather"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/TopMiddleZoneButton"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/TopMiddleZoneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="onClickTopMiddle"
-        android:text="Button"
-        app:layout_constraintLeft_toRightOf="@+id/TopLeftZoneButton"
-        app:layout_constraintTop_toTopOf="@+id/TopLeftZoneButton" />
-
-    <Button
-        android:id="@+id/TopRightZoneButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        android:layout_marginRight="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/TopMiddleZoneButton"
-        app:layout_constraintTop_toTopOf="@+id/TopMiddleZoneButton"
-        app:layout_constraintHorizontal_bias="0.0"
-        android:layout_marginEnd="16dp" />
 
 </android.support.constraint.ConstraintLayout>
