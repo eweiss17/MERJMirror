@@ -1,76 +1,31 @@
 package com.merj.merjmirror;
 
-import android.content.ClipData;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.app.FragmentManager;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /* Created By Eric Weiss snd James Gabriel
 * The sun_image is a test. It is actually part of the Taiwanese flag and needs to be deleted eventually because the US does not like Taiwan.
 * must account for when the app closes and opens, changes must be saved*/
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //NOT MAIN, I set it to the preference grid view layout
-        setContentView(R.layout.preference_layout);
-
-        CreateSpinners();
+        setContentView(R.layout.activity_main);
 
         StartupRoutine();
-    }
 
-    private void CreateSpinners(){
-
-        //I will fix this to look better later, right now this works.
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
-        Spinner spinner3 = (Spinner) findViewById(R.id.spinner3);
-        Spinner spinner4 = (Spinner) findViewById(R.id.spinner4);
-        Spinner spinner5 = (Spinner) findViewById(R.id.spinner5);
-        Spinner spinner6 = (Spinner) findViewById(R.id.spinner6);
-        Spinner spinner7 = (Spinner) findViewById(R.id.spinner7);
-        Spinner spinner8 = (Spinner) findViewById(R.id.spinner8);
-        Spinner spinner9 = (Spinner) findViewById(R.id.spinner9);
-
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> PreferenceNames = ArrayAdapter.createFromResource(this,
-                R.array.preferences_array, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        PreferenceNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        //Same here I know it looks bad
-        spinner.setAdapter(PreferenceNames);
-        spinner2.setAdapter(PreferenceNames);
-        spinner3.setAdapter(PreferenceNames);
-        spinner4.setAdapter(PreferenceNames);
-        spinner5.setAdapter(PreferenceNames);
-        spinner6.setAdapter(PreferenceNames);
-        spinner7.setAdapter(PreferenceNames);
-        spinner8.setAdapter(PreferenceNames);
-        spinner9.setAdapter(PreferenceNames);
-
-        //Declares a listener object and passes one of the spinners
-        YourItemSelectedListener spinnerListener = new YourItemSelectedListener();
-
-        spinner2.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner2, spinner2, 0, 0);
-        // only passes the spinner. The numbers are irrelevant afaik.
+        NavigationViewStart();
     }
 
     private void StartupRoutine() {
@@ -78,39 +33,82 @@ public class MainActivity extends AppCompatActivity {
         //if true, run setup
         //if false, continue
     }
-    
-    //Declares a class used to listen to which spinner item is selected
-    private class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
-        public void onItemSelected(AdapterView<?> spinner, View view, int pos, long id) {
+    private void NavigationViewStart() {
 
-            String ItemName = spinner.getSelectedItem().toString();
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
 
-            switch (ItemName) {
-                //case "Empty": spinner.setBackgroundColor(555555);
-                case "Weather": view.setBackground(getDrawable(R.drawable.weather));
-                    break;
-                case "Calendar": view.setBackground(getDrawable(R.drawable.calendar));
-                    break;
-                case "Horoscope": view.setBackground(getDrawable(R.drawable.horoscope));
-                    break;
-                case "Comics": view.setBackground(getDrawable(R.drawable.comics));
-                    break;
-                case "News": view.setBackground(getDrawable(R.drawable.news));
-                    break;
-                case "Reminders": view.setBackground(getDrawable(R.drawable.notes));
-                    break;
-                case "Stocks": view.setBackground(getDrawable(R.drawable.stocks));
-                    break;
-                case "Clock": view.setBackground(getDrawable(R.drawable.clock));
-                    break;
-                default: break;
-            }
-        }
+    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
 
-        public void onNothingSelected(AdapterView parent) {
-            // This needs to be included. We won't use this though.
+    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+        FragmentManager fragmentManager = getFragmentManager();
+
+        if (id == R.id.nav_user_layout) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , new UserFragment())
+                    .commit();
+        } else if (id == R.id.nav_settings_layout) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , new SettingsFragment())
+                    .commit();
+        } else if (id == R.id.nav_preference_layout) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame
+                            , new PreferenceFragment())
+                    .commit();
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
 }
