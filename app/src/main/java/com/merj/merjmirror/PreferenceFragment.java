@@ -1,6 +1,7 @@
 package com.merj.merjmirror;
 
 import android.app.Fragment;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -9,7 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageSwitcher;
 import android.widget.Spinner;
+
+import java.lang.reflect.Array;
 
 
 /**
@@ -19,6 +23,7 @@ import android.widget.Spinner;
 public class PreferenceFragment extends Fragment {
 
     View myView;
+    String[] SelectedPreferences = new String[8];
 
     @Nullable
     @Override
@@ -63,9 +68,30 @@ public class PreferenceFragment extends Fragment {
         //Declares a listener object and passes one of the spinners
         PreferenceFragment.YourItemSelectedListener spinnerListener = new PreferenceFragment.YourItemSelectedListener();
 
+        spinner.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner, spinner, 0, 0);
         spinner2.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner2, spinner2, 0, 0);
+        spinnerListener.onItemSelected(spinner2, spinner2, 1, 0);
+        spinner3.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner3, spinner3, 2, 0);
+        spinner4.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner4, spinner4, 3, 0);
+        spinner5.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner5, spinner5, 4, 0);
+        spinner6.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner6, spinner6, 5, 0);
+        spinner7.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner7, spinner7, 6, 0);
+        spinner8.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner8, spinner8, 7, 0);
+        spinner9.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner9, spinner9, 8, 0);
         // only passes the spinner. The numbers are irrelevant afaik.
+
+
+
+
+
     }
 
     //Declares a class used to listen to which spinner item is selected
@@ -76,30 +102,40 @@ public class PreferenceFragment extends Fragment {
             String ItemName = spinner.getSelectedItem().toString();
 
             switch (ItemName) {
-                //case "Empty": spinner.setBackgroundColor(555555);
+
+                //sports?
                 case "Weather":
-                    view.setBackground(getActivity().getDrawable(R.drawable.weather));
+                    //view.setBackground(weather);
+                    SelectedPreferences[pos] = ItemName;
+                    // ^^inside because it crashes outside
                     break;
                 case "Calendar":
-                    view.setBackground(getActivity().getDrawable(R.drawable.calendar));
+                    //view.setBackground(calendar);
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "Horoscope":
-                    view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "Comics":
-                    view.setBackground(getActivity().getDrawable(R.drawable.comics));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.comics));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "News":
-                    view.setBackground(getActivity().getDrawable(R.drawable.news));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.news));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "Reminders":
-                    view.setBackground(getActivity().getDrawable(R.drawable.notes));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.notes));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "Stocks":
-                    view.setBackground(getActivity().getDrawable(R.drawable.stocks));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 case "Clock":
-                    view.setBackground(getActivity().getDrawable(R.drawable.clock));
+                    //view.setBackground(getActivity().getDrawable(R.drawable.clock));
+                    SelectedPreferences[pos] = ItemName;
                     break;
                 default:
                     break;

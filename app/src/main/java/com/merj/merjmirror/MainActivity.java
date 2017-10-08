@@ -12,8 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 /* Created By Eric Weiss snd James Gabriel
-* The sun_image is a test. It is actually part of the Taiwanese flag and needs to be deleted eventually because the US does not like Taiwan.
-* must account for when the app closes and opens, changes must be saved*/
+* might need to account for when the app closes and opens, certain changes must be saved*/
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -22,16 +21,18 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame
+                        , new PreferenceFragment())
+                .commit();
         StartupRoutine();
 
         NavigationViewStart();
     }
 
     private void StartupRoutine() {
-        //check to see if first time user
-        //if true, run setup
-        //if false, continue
+        /*connect to mirror*/
     }
 
     private void NavigationViewStart() {
