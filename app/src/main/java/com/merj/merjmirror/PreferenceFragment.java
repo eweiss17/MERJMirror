@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,27 +18,35 @@ import java.lang.reflect.Array;
 
 
 /**
- * Created by Eric on 9/27/2017.
+ * Created by Chad Roxx on 9/27/2017.
  */
 
 public class PreferenceFragment extends Fragment {
 
     View myView;
     String[] SelectedPreferences = new String[8];
+    String[] Example = {"Morning", "Day", "Night"};
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.preference_layout, container, false);
 
+        //Creating Default data
+        CreatePreferenceSelectionList();
+
+        //This will be constant
         CreateSpinners();
+
+        //Adding a listener to listen to different selections from users preferences
+        ChangesFromDatabase();
 
         return myView;
     }
 
     public void CreateSpinners() {
 
-        //I will fix this to look better later, right now this works.
+        //Spinner 5 is invisible, BOO, spooky ghosts!
         Spinner spinner = (Spinner) myView.findViewById(R.id.spinner);
         Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
         Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
@@ -51,10 +60,11 @@ public class PreferenceFragment extends Fragment {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> PreferenceNames = ArrayAdapter.createFromResource(this.getActivity(),
                 R.array.preferences_array, android.R.layout.simple_spinner_item);
+
         // Specify the layout to use when the list of choices appears
         PreferenceNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         // Apply the adapter to the spinner
-        //Same here I know it looks bad
         spinner.setAdapter(PreferenceNames);
         spinner2.setAdapter(PreferenceNames);
         spinner3.setAdapter(PreferenceNames);
@@ -88,9 +98,30 @@ public class PreferenceFragment extends Fragment {
         spinnerListener.onItemSelected(spinner9, spinner9, 8, 0);
         // only passes the spinner. The numbers are irrelevant afaik.
 
+    }
 
+    public void CreatePreferenceSelectionList() {
+        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
+                android.R.layout.simple_spinner_item, Example);
 
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        pref_spinner.setAdapter(adapter);
+
+    }
+
+    public void ChangesFromDatabase() {
+
+        //We should make these globally accessable if we are going to do it like this
+        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
+
+        PreferenceFragment.YourItemSelectedListener prefListener = new PreferenceFragment.YourItemSelectedListener();
+
+        pref_spinner.setOnItemSelectedListener(prefListener);
+        prefListener.onItemSelected(pref_spinner, pref_spinner, 0, 0);
 
     }
 
@@ -101,44 +132,95 @@ public class PreferenceFragment extends Fragment {
 
             String ItemName = spinner.getSelectedItem().toString();
 
-            switch (ItemName) {
+            //This is mainly here to see if i can get it to work, will need to make cleaner in future
+            Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
+            Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
+            Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
+            Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
+            Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
+            Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
+            Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
+            Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
+            Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
-                //sports?
-                case "Weather":
-                    //view.setBackground(weather);
-                    SelectedPreferences[pos] = ItemName;
-                    // ^^inside because it crashes outside
-                    break;
-                case "Calendar":
-                    //view.setBackground(calendar);
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "Horoscope":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "Comics":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.comics));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "News":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.news));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "Reminders":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.notes));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "Stocks":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                case "Clock":
-                    //view.setBackground(getActivity().getDrawable(R.drawable.clock));
-                    SelectedPreferences[pos] = ItemName;
-                    break;
-                default:
-                    break;
+            //This may be actually the worst thing i have ever done, i could not figure out how to just grab the spinner ID god damn
+            if (spinner.getItemAtPosition(1) == "Day") {
+
+                //Test until we get real data
+                if (ItemName == "Day") {
+                    spinner1.setSelection(0);
+                    spinner2.setSelection(0);
+                    spinner3.setSelection(0);
+                    spinner4.setSelection(0);
+                    spinner5.setSelection(0);
+                    spinner6.setSelection(0);
+                    spinner7.setSelection(0);
+                    spinner8.setSelection(0);
+                    spinner9.setSelection(0);
+                }
+                else if (ItemName == "Night") {
+                    spinner1.setSelection(6);
+                    spinner2.setSelection(6);
+                    spinner3.setSelection(6);
+                    spinner4.setSelection(6);
+                    spinner5.setSelection(6);
+                    spinner6.setSelection(6);
+                    spinner7.setSelection(6);
+                    spinner8.setSelection(6);
+                    spinner9.setSelection(6);
+                }
+                else {
+                    spinner1.setSelection(5);
+                    spinner2.setSelection(5);
+                    spinner3.setSelection(5);
+                    spinner4.setSelection(5);
+                    spinner5.setSelection(5);
+                    spinner6.setSelection(5);
+                    spinner7.setSelection(5);
+                    spinner8.setSelection(5);
+                    spinner9.setSelection(5);
+                }
+            }
+            else {
+                switch (ItemName) {
+
+                    //sports?
+                    case "Weather":
+                        //view.setBackground(weather);
+                        SelectedPreferences[pos] = ItemName;
+                        // ^^inside because it crashes outside
+                        break;
+                    case "Calendar":
+                        //view.setBackground(calendar);
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "Horoscope":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "Comics":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.comics));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "News":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.news));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "Reminders":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.notes));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "Stocks":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    case "Clock":
+                        //view.setBackground(getActivity().getDrawable(R.drawable.clock));
+                        SelectedPreferences[pos] = ItemName;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 

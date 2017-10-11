@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/* Created By Eric Weiss snd James Gabriel
+/* Created By Eric the Great and King James VI
 * might need to account for when the app closes and opens, certain changes must be saved*/
 
 public class MainActivity extends AppCompatActivity
@@ -22,9 +22,11 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
+
+        //Eric here, doing User fragment so they can select their active user
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame
-                        , new PreferenceFragment())
+                        , new UserFragment())
                 .commit();
         StartupRoutine();
 
