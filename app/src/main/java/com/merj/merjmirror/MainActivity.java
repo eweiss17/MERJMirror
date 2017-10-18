@@ -123,8 +123,31 @@ public class MainActivity extends AppCompatActivity
 
     public void onUserSelected(int position) {
 
-        //PreferenceFragment prefFrag = (PreferenceFragment)
-                //getSupportFragmentManager().findFragmentByTag("pref");
-    }
+        PreferenceFragment prefFrag = (PreferenceFragment)
+                getFragmentManager().findFragmentById(R.id.nav_preference_layout);
 
+        if (prefFrag != null) {
+            // If article frag is available, we're in two-pane layout...
+
+            // Call a method in the ArticleFragment to update its content
+            //prefFrag.updateArticleView(position);
+
+        } else {
+                // Otherwise, we're in the one-pane layout and must swap frags...
+
+                FragmentManager fragmentManager = getFragmentManager();
+
+                // Create fragment and give it an argument for the selected article
+                PreferenceFragment newFragment = new PreferenceFragment();
+                Bundle args = new Bundle();
+                args.putInt("blah", position);
+                newFragment.setArguments(args);
+
+                fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
+
+        }
+
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+    }
 }

@@ -60,9 +60,6 @@ public class UserFragment extends Fragment {
     public class UserSelected implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> spinner, View view, int pos, long id) {
-            Toast toast = Toast.makeText(view.getContext(), "Testing with a toast", Toast.LENGTH_SHORT );
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
             mCallback.onUserSelected(pos);
         }
     }
