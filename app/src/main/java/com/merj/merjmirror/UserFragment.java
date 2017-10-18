@@ -1,10 +1,13 @@
 package com.merj.merjmirror;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,7 +26,7 @@ import android.widget.Toast;
 public class UserFragment extends Fragment {
     View myView;
     UserSelectedListener mCallback;
-
+    String newUser = "";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -51,9 +55,33 @@ public class UserFragment extends Fragment {
     public class MessagePopUp implements AdapterView.OnClickListener {
         public void onClick(View v) {
             // implements your things
-            Toast toast = Toast.makeText(v.getContext(), "Add a new user", Toast.LENGTH_SHORT );
-            toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            builder.setTitle("Title");
+
+            // Set up the input
+            final EditText input = new EditText(v.getContext());
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    newUser = input.getText().toString();
+                    Toast toast = Toast.makeText(myView.getContext(), "Your new user is " + newUser, Toast.LENGTH_SHORT );
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
         }
     }
 

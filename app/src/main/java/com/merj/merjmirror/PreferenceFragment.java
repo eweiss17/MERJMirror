@@ -1,18 +1,25 @@
 package com.merj.merjmirror;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageSwitcher;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 
@@ -26,11 +33,13 @@ public class PreferenceFragment extends Fragment {
     View myView;
     String[] SelectedPreferences = new String[8];
     String[] Example = {"Morning", "Day", "Night"};
+    String m_Text = "";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.preference_layout, container, false);
+        Button newPrefButton = (Button) myView.findViewById(R.id.add_new_button);
 
         //Creating Default data
         CreatePreferenceSelectionList();
@@ -40,6 +49,10 @@ public class PreferenceFragment extends Fragment {
 
         //Adding a listener to listen to different selections from users preferences
         ChangesFromDatabase();
+
+        //Giving new user button on click functionality
+        PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
+        newPrefButton.setOnClickListener(box);
 
         return myView;
     }
@@ -114,7 +127,6 @@ public class PreferenceFragment extends Fragment {
     }
 
     public void ChangesFromDatabase() {
-
         //We should make these globally accessable if we are going to do it like this
         Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
@@ -227,5 +239,38 @@ public class PreferenceFragment extends Fragment {
         public void onNothingSelected(AdapterView parent) {
             // This needs to be included. We won't use this though.
         }
+    }
+
+    //Pop up box for new user button
+    public class ButtonPopUpBox implements AdapterView.OnClickListener {
+        public void onClick(View v) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            builder.setTitle("Title");
+
+            // Set up the input
+            final EditText input = new EditText(v.getContext());
+            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            builder.setView(input);
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    m_Text = input.getText().toString();
+                    Toast toast = Toast.makeText(myView.getContext(), m_Text, Toast.LENGTH_SHORT );
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+    }
     }
 }
