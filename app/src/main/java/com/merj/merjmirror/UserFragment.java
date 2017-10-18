@@ -1,9 +1,10 @@
 package com.merj.merjmirror;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 public class UserFragment extends Fragment {
     View myView;
+    UserSelectedListener mCallback;
 
     @Nullable
     @Override
@@ -36,11 +38,15 @@ public class UserFragment extends Fragment {
         ListView listView = (ListView) myView.findViewById(R.id.listview);
         listView.setAdapter(adapter);
 
+        UserFragment.UserSelected userListener = new UserFragment.UserSelected();
+        listView.setOnItemClickListener(userListener);
+
         UserFragment.MessagePopUp clicks = new UserFragment.MessagePopUp();
         newUserButton.setOnClickListener(clicks);
 
         return myView;
     }
+
 
     public class MessagePopUp implements AdapterView.OnClickListener {
         public void onClick(View v) {
@@ -48,6 +54,32 @@ public class UserFragment extends Fragment {
             Toast toast = Toast.makeText(v.getContext(), "Add a new user", Toast.LENGTH_SHORT );
             toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
+        }
+    }
+
+    public class UserSelected implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> spinner, View view, int pos, long id) {
+            Toast toast = Toast.makeText(view.getContext(), "Testing with a toast", Toast.LENGTH_SHORT );
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+            mCallback.onUserSelected(pos);
+        }
+    }
+
+    public interface UserSelectedListener {
+        public void onUserSelected(int position);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        try {
+            mCallback = (UserSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement UserSelectedListener");
         }
     }
 }

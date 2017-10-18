@@ -1,21 +1,25 @@
 package com.merj.merjmirror;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 /* Created By Eric the Great and King James VI
 * might need to account for when the app closes and opens, certain changes must be saved*/
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, UserFragment.UserSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,24 +98,33 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
         FragmentManager fragmentManager = getFragmentManager();
 
+        //getFragmentManager().beginTransaction().add(R.id.fragment_container, fragmentToBeAdded, tag).commit();
+
         if (id == R.id.nav_user_layout) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new UserFragment())
+                            , new UserFragment(), "user")
                     .commit();
         } else if (id == R.id.nav_settings_layout) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new SettingsFragment())
+                            , new SettingsFragment(), "settings")
                     .commit();
         } else if (id == R.id.nav_preference_layout) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame
-                            , new PreferenceFragment())
+                            , new PreferenceFragment(), "pref")
                     .commit();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void onUserSelected(int position) {
+
+        //PreferenceFragment prefFrag = (PreferenceFragment)
+                //getSupportFragmentManager().findFragmentByTag("pref");
+    }
+
 }

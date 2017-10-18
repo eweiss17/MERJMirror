@@ -8,7 +8,7 @@
 
     <Spinner
         android:id="@+id/preference_list"
-        android:layout_width="match_parent"
+        android:layout_width="354dp"
         android:layout_height="20dp"
         android:layout_column="0"
         android:layout_columnSpan="3"
