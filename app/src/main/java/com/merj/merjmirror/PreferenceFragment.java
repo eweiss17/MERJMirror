@@ -17,11 +17,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 /**
@@ -32,8 +34,8 @@ public class PreferenceFragment extends Fragment {
 
     View myView;
     String[] SelectedPreferences = new String[8];
-    String[] Example = {"Morning", "Day", "Night"};
-    String m_Text = "";
+    ArrayList al = new ArrayList();
+    String newPrefTitle = "";
 
     @Nullable
     @Override
@@ -59,8 +61,7 @@ public class PreferenceFragment extends Fragment {
 
     public void CreateSpinners() {
 
-        //Spinner 5 is invisible, BOO, spooky ghosts!
-        Spinner spinner = (Spinner) myView.findViewById(R.id.spinner);
+        Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
         Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
         Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
         Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
@@ -78,7 +79,7 @@ public class PreferenceFragment extends Fragment {
         PreferenceNames.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinner
-        spinner.setAdapter(PreferenceNames);
+        spinner1.setAdapter(PreferenceNames);
         spinner2.setAdapter(PreferenceNames);
         spinner3.setAdapter(PreferenceNames);
         spinner4.setAdapter(PreferenceNames);
@@ -91,8 +92,8 @@ public class PreferenceFragment extends Fragment {
         //Declares a listener object and passes one of the spinners
         PreferenceFragment.YourItemSelectedListener spinnerListener = new PreferenceFragment.YourItemSelectedListener();
 
-        spinner.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner, spinner, 0, 0);
+        spinner1.setOnItemSelectedListener(spinnerListener);
+        spinnerListener.onItemSelected(spinner1, spinner1, 0, 0);
         spinner2.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner2, spinner2, 1, 0);
         spinner3.setOnItemSelectedListener(spinnerListener);
@@ -116,8 +117,11 @@ public class PreferenceFragment extends Fragment {
     public void CreatePreferenceSelectionList() {
         Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
+        al.add("Default");
+        al.add("Day");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
-                android.R.layout.simple_spinner_item, Example);
+                android.R.layout.simple_spinner_item, al);
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -160,15 +164,15 @@ public class PreferenceFragment extends Fragment {
 
                 //Test until we get real data
                 if (ItemName == "Day") {
-                    spinner1.setSelection(0);
-                    spinner2.setSelection(0);
-                    spinner3.setSelection(0);
-                    spinner4.setSelection(0);
-                    spinner5.setSelection(0);
-                    spinner6.setSelection(0);
-                    spinner7.setSelection(0);
-                    spinner8.setSelection(0);
-                    spinner9.setSelection(0);
+                    spinner1.setSelection(4);
+                    spinner2.setSelection(3);
+                    spinner3.setSelection(2);
+                    spinner4.setSelection(6);
+                    spinner5.setSelection(1);
+                    spinner6.setSelection(2);
+                    spinner7.setSelection(3);
+                    spinner8.setSelection(4);
+                    spinner9.setSelection(5);
                 }
                 else if (ItemName == "Night") {
                     spinner1.setSelection(6);
@@ -182,15 +186,15 @@ public class PreferenceFragment extends Fragment {
                     spinner9.setSelection(6);
                 }
                 else {
-                    spinner1.setSelection(5);
-                    spinner2.setSelection(5);
-                    spinner3.setSelection(5);
-                    spinner4.setSelection(5);
-                    spinner5.setSelection(5);
-                    spinner6.setSelection(5);
-                    spinner7.setSelection(5);
-                    spinner8.setSelection(5);
-                    spinner9.setSelection(5);
+                    spinner1.setSelection(0);
+                    spinner2.setSelection(0);
+                    spinner3.setSelection(0);
+                    spinner4.setSelection(0);
+                    spinner5.setSelection(0);
+                    spinner6.setSelection(0);
+                    spinner7.setSelection(0);
+                    spinner8.setSelection(0);
+                    spinner9.setSelection(0);
                 }
             }
             else {
@@ -245,22 +249,32 @@ public class PreferenceFragment extends Fragment {
     public class ButtonPopUpBox implements AdapterView.OnClickListener {
         public void onClick(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setTitle("Title");
+            builder.setTitle("New Preference");
 
             // Set up the input
-            final EditText input = new EditText(v.getContext());
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+            final EditText input = new EditText(myView.getContext());
+
+            // Specify the type of input expected
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            builder.setView(input);
+
+            //This is all to get some margin on the dialog box
+            FrameLayout container = new FrameLayout(v.getContext());
+            FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+            params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+            input.setLayoutParams(params);
+            container.addView(input);
+
+            builder.setView(container);
 
             // Set up the buttons
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    m_Text = input.getText().toString();
-                    Toast toast = Toast.makeText(myView.getContext(), m_Text, Toast.LENGTH_SHORT );
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
+
+                    newPrefTitle = input.getText().toString();
+
+                    al.add(newPrefTitle);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
