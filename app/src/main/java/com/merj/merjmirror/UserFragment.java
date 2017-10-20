@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 
+import database.MerjMirror;
+
 /**
  * Created by ??? on 9/27/2017.
  */
@@ -31,12 +36,19 @@ public class UserFragment extends Fragment {
     String newUser = "";
     //Array List is way better than basic arrays for this.
     ArrayList al = new ArrayList();
+    ArrayList <String> spaghetti = new ArrayList();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
+        //ConnectToDatabase connect = new ConnectToDatabase();
+        //connect.execute();
+
+        //MerjMirror database = new MerjMirror();
+        //spaghetti = database.getUsers();
+        Log.d("Spaghetti ", spaghetti.toString());
         //Hardcoded until access to database. Can use these for testing
         al.add("Megan");
         al.add("Eric");
@@ -50,12 +62,15 @@ public class UserFragment extends Fragment {
         newUserButton.setOnClickListener(clicks);
 
         //List crap
-        adaptArray(al);
+        adaptArray(spaghetti);
 
         return myView;
     }
 
     void adaptArray(ArrayList listData) {
+        //Call to database to make sure we have updated data
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_list_item_1, listData);
 
@@ -99,6 +114,9 @@ public class UserFragment extends Fragment {
 
                     //Adding the new user to the list and then updating it
                     al.add(newUser);
+
+                    //Database call send
+
                     adaptArray(al);
                 }
             });
@@ -135,4 +153,22 @@ public class UserFragment extends Fragment {
                     + " must implement UserSelectedListener");
         }
     }
+
+    /*private class ConnectToDatabase extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String[] params) {
+            // do above Server call here
+
+            spaghetti = database.getUsers();
+            Log.d("Spaghetti ", spaghetti.toString());
+            return "some message";
+        }
+
+        @Override
+        protected void onPostExecute(String message) {
+            //process message
+
+        }
+    }*/
 }

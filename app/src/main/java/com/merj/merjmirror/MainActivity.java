@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import database.MerjMirror;
+
 /* Created By Eric the Great and King James VI
 * might need to account for when the app closes and opens, certain changes must be saved*/
 
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity
                 args.putInt("blah", position);
                 newFragment.setArguments(args);
 
-                fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
+                fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).commit();
 
         }
 
