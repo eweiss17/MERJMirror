@@ -10,9 +10,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /* Created By Eric the Great and King James VI
@@ -20,6 +22,11 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserFragment.UserSelectedListener {
+
+    //SettingsFragment settingsFragment = new SettingsFragment();
+    //UserFragment userFragment = new UserFragment();
+    //PreferenceFragment preferenceFragment = new PreferenceFragment();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,15 +128,23 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onUserSelected(int position) {
+    public void onUserSelected(String userName) {
 
         PreferenceFragment prefFrag = (PreferenceFragment)
                 getFragmentManager().findFragmentById(R.id.nav_preference_layout);
+
+        // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+
+        //Menu menu = navView.getMenu();
+        //Log.d("ChECking", userName);
+
 
         if (prefFrag != null) {
             // If article frag is available, we're in two-pane layout...
 
             // Call a method in the ArticleFragment to update its content
+            prefFrag.setText(userName);
             //prefFrag.updateArticleView(position);
 
         } else {
@@ -140,14 +155,16 @@ public class MainActivity extends AppCompatActivity
                 // Create fragment and give it an argument for the selected article
                 PreferenceFragment newFragment = new PreferenceFragment();
                 Bundle args = new Bundle();
-                args.putInt("blah", position);
+                args.putString("UserName", userName);
                 newFragment.setArguments(args);
 
                 fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
+                //onNavigationItemSelected(menu.getItem(2));
+                //drawer.clearFocus();
+                //newFragment.setText(userName);
 
         }
 
         //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
     }
 }

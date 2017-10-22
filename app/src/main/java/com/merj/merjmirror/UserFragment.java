@@ -115,13 +115,14 @@ public class UserFragment extends Fragment {
 
     public class UserSelected implements AdapterView.OnItemClickListener {
         @Override
-        public void onItemClick(AdapterView<?> spinner, View view, int pos, long id) {
-            mCallback.onUserSelected(pos);
+        public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
+            String userName = list.getItemAtPosition(pos).toString();
+            mCallback.onUserSelected(userName);
         }
     }
 
     public interface UserSelectedListener {
-        public void onUserSelected(int position);
+        public void onUserSelected(String userName);
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
@@ -55,6 +56,8 @@ public class PreferenceFragment extends Fragment {
         //Giving new user button on click functionality
         PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
         newPrefButton.setOnClickListener(box);
+
+        setText(getArguments() != null ? getArguments().getString("UserName") : "No User Selected");
 
         return myView;
     }
@@ -140,6 +143,11 @@ public class PreferenceFragment extends Fragment {
         prefListener.onItemSelected(pref_spinner, pref_spinner, 0, 0);
 
     }
+
+    public void setText(String name) {
+        TextView text = (TextView) myView.findViewById(R.id.username_text);
+        text.setText(name);
+}
 
     //Declares a class used to listen to which spinner item is selected
     public class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
