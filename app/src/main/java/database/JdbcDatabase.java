@@ -8,6 +8,10 @@
  */
 package database;
 
+import android.os.AsyncTask;
+import android.os.StrictMode;
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -23,7 +27,8 @@ public class JdbcDatabase {
     private String url;
     private String user;
     private String password;
-    private DriverManager driver;
+    public DriverManager driver;
+    public Connection conn;
 
     /**
      * Creates the data Source.
@@ -41,18 +46,32 @@ public class JdbcDatabase {
      * @throws SQLException SQL Exception catch
      */
     public Connection getConnection () throws SQLException {
-        Connection conn;
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-        try{
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-        }catch(Exception e){
-            System.err.println("Cannot create connection");
-        }
+        StrictMode.setThreadPolicy(policy);*/
 
-        conn = driver.getConnection(url, user, password);
-
+        new retrieveDataBase().execute(conn);
         return conn;
     }
+
+    private class retrieveDataBase extends AsyncTask<Connection, Void, Void> {
+        @Override
+        protected Void doInBackground(Connection... params) {
+            try {
+                Class.forName("com.mysql.jdbc.Driver").newInstance();
+            } catch (Exception e) {
+                Log.d("Connection Catch", "Cannot create connection");
+            }
+
+            try {
+                conn = driver.getConnection(url, user, password);
+            } catch (SQLException e) {
+                Log.d("Connection Catch", "Cannot create Connection");
+            }
+
+            return null;
+        }
+    };
 
     /**
      * Gets the singleton Reference.

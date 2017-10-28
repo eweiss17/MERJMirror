@@ -10,10 +10,13 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 import database.MerjMirror;
 
@@ -41,7 +44,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void StartupRoutine() {
+        /*ArrayList al = new ArrayList();
+        ArrayList <String> spaghetti = new ArrayList();
         /*connect to mirror*/
+        /*MerjMirror database = new MerjMirror();
+        spaghetti = database.getUsers();
+        Log.d("Spaghetti ", spaghetti.toString());*/
     }
 
     private void NavigationViewStart() {

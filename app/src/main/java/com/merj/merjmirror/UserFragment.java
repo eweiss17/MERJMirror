@@ -43,17 +43,19 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
+
         //ConnectToDatabase connect = new ConnectToDatabase();
         //connect.execute();
 
-        //MerjMirror database = new MerjMirror();
-        //spaghetti = database.getUsers();
+        MerjMirror database = new MerjMirror();
+        spaghetti = database.getUsers();
         Log.d("Spaghetti ", spaghetti.toString());
         //Hardcoded until access to database. Can use these for testing
         al.add("Megan");
         al.add("Eric");
-        al.add("Ryan");
         al.add("James");
+        al.add("Ryan");
+
 
         //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
