@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,9 +46,11 @@ public class UserFragment extends Fragment {
 
         //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
+        Button deleteUserButton = (Button) myView.findViewById(R.id.delete_user_button);
 
         UserFragment.MessagePopUp clicks = new UserFragment.MessagePopUp();
         newUserButton.setOnClickListener(clicks);
+        deleteUserButton.setOnClickListener(clicks);
 
         //List crap
         adaptArray(al);
@@ -71,7 +74,11 @@ public class UserFragment extends Fragment {
         public void onClick(View v) {
             // implements your things
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setTitle("New User");
+
+            builder.setTitle(v.toString().contains("add") ? "New User" : "Delete User");
+            //builder.setTitle("New User");
+
+            //Log.d("Testing", v.toString());
 
             // Set up the input
             final EditText input = new EditText(v.getContext());

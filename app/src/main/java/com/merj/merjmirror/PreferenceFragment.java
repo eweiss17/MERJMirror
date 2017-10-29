@@ -36,13 +36,16 @@ public class PreferenceFragment extends Fragment {
     View myView;
     String[] SelectedPreferences = new String[8];
     ArrayList al = new ArrayList();
+    ArrayList prefSelections = new ArrayList();
     String newPrefTitle = "";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.preference_layout, container, false);
+
         Button newPrefButton = (Button) myView.findViewById(R.id.add_new_button);
+        Button saveButton = (Button) myView.findViewById(R.id.save_button);
 
         //Creating Default data
         CreatePreferenceSelectionList();
@@ -56,6 +59,7 @@ public class PreferenceFragment extends Fragment {
         //Giving new user button on click functionality
         PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
         newPrefButton.setOnClickListener(box);
+        saveButton.setOnClickListener(box);
 
         setText(getArguments() != null ? getArguments().getString("UserName") : "No User Selected");
 
@@ -68,7 +72,7 @@ public class PreferenceFragment extends Fragment {
         Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
         Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
         Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
-        Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
+        //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
         Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
         Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
         Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
@@ -86,7 +90,7 @@ public class PreferenceFragment extends Fragment {
         spinner2.setAdapter(PreferenceNames);
         spinner3.setAdapter(PreferenceNames);
         spinner4.setAdapter(PreferenceNames);
-        spinner5.setAdapter(PreferenceNames);
+        //spinner5.setAdapter(PreferenceNames);
         spinner6.setAdapter(PreferenceNames);
         spinner7.setAdapter(PreferenceNames);
         spinner8.setAdapter(PreferenceNames);
@@ -103,16 +107,16 @@ public class PreferenceFragment extends Fragment {
         spinnerListener.onItemSelected(spinner3, spinner3, 2, 0);
         spinner4.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner4, spinner4, 3, 0);
-        spinner5.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner5, spinner5, 4, 0);
+        //spinner5.setOnItemSelectedListener(spinnerListener);
+        //spinnerListener.onItemSelected(spinner5, spinner5, 4, 0);
         spinner6.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner6, spinner6, 5, 0);
+        spinnerListener.onItemSelected(spinner6, spinner6, 4, 0);
         spinner7.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner7, spinner7, 6, 0);
+        spinnerListener.onItemSelected(spinner7, spinner7, 5, 0);
         spinner8.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner8, spinner8, 7, 0);
+        spinnerListener.onItemSelected(spinner8, spinner8, 6, 0);
         spinner9.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner9, spinner9, 8, 0);
+        spinnerListener.onItemSelected(spinner9, spinner9, 7, 0);
         // only passes the spinner. The numbers are irrelevant afaik.
 
     }
@@ -120,6 +124,7 @@ public class PreferenceFragment extends Fragment {
     public void CreatePreferenceSelectionList() {
         Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
+        //grab initial info from database
         al.add("Default");
         al.add("Day");
 
@@ -128,7 +133,6 @@ public class PreferenceFragment extends Fragment {
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
         pref_spinner.setAdapter(adapter);
 
     }
@@ -140,14 +144,14 @@ public class PreferenceFragment extends Fragment {
         PreferenceFragment.YourItemSelectedListener prefListener = new PreferenceFragment.YourItemSelectedListener();
 
         pref_spinner.setOnItemSelectedListener(prefListener);
-        prefListener.onItemSelected(pref_spinner, pref_spinner, 0, 0);
+        prefListener.onItemSelected(pref_spinner, pref_spinner, 13, 0);
 
     }
 
     public void setText(String name) {
         TextView text = (TextView) myView.findViewById(R.id.username_text);
         text.setText(name);
-}
+    }
 
     //Declares a class used to listen to which spinner item is selected
     public class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -161,14 +165,15 @@ public class PreferenceFragment extends Fragment {
             Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
             Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
             Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
-            Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
+            //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
             Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
             Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
             Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
             Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
-            //This may be actually the worst thing i have ever done, i could not figure out how to just grab the spinner ID god damn
-            if (spinner.getItemAtPosition(1) == "Day") {
+            if (spinner.toString().contains("preference_list")) {
+
+                //Pull data from database
 
                 //Test until we get real data
                 if (ItemName == "Day") {
@@ -176,7 +181,7 @@ public class PreferenceFragment extends Fragment {
                     spinner2.setSelection(3);
                     spinner3.setSelection(2);
                     spinner4.setSelection(6);
-                    spinner5.setSelection(1);
+                    //spinner5.setSelection(1);
                     spinner6.setSelection(2);
                     spinner7.setSelection(3);
                     spinner8.setSelection(4);
@@ -187,7 +192,7 @@ public class PreferenceFragment extends Fragment {
                     spinner2.setSelection(6);
                     spinner3.setSelection(6);
                     spinner4.setSelection(6);
-                    spinner5.setSelection(6);
+                   //spinner5.setSelection(6);
                     spinner6.setSelection(6);
                     spinner7.setSelection(6);
                     spinner8.setSelection(6);
@@ -198,7 +203,7 @@ public class PreferenceFragment extends Fragment {
                     spinner2.setSelection(0);
                     spinner3.setSelection(0);
                     spinner4.setSelection(0);
-                    spinner5.setSelection(0);
+                    //spinner5.setSelection(0);
                     spinner6.setSelection(0);
                     spinner7.setSelection(0);
                     spinner8.setSelection(0);
@@ -256,43 +261,79 @@ public class PreferenceFragment extends Fragment {
     //Pop up box for new user button
     public class ButtonPopUpBox implements AdapterView.OnClickListener {
         public void onClick(View v) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setTitle("New Preference");
+            if (v.toString().contains("save_button")) {
 
-            // Set up the input
-            final EditText input = new EditText(myView.getContext());
+                Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
+                Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
+                Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
+                Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
+                //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
+                Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
+                Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
+                Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
+                Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
-            // Specify the type of input expected
-            input.setInputType(InputType.TYPE_CLASS_TEXT);
+                prefSelections.clear();
 
-            //This is all to get some margin on the dialog box
-            FrameLayout container = new FrameLayout(v.getContext());
-            FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-            params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-            input.setLayoutParams(params);
-            container.addView(input);
+                prefSelections.add(spinner1.getSelectedItem());
+                prefSelections.add(spinner2.getSelectedItem());
+                prefSelections.add(spinner3.getSelectedItem());
+                prefSelections.add(spinner4.getSelectedItem());
+                prefSelections.add(spinner6.getSelectedItem());
+                prefSelections.add(spinner7.getSelectedItem());
+                prefSelections.add(spinner8.getSelectedItem());
+                prefSelections.add(spinner9.getSelectedItem());
 
-            builder.setView(container);
+                //Submit all changes to database here
 
-            // Set up the buttons
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                Toast toast = Toast.makeText(myView.getContext(), "Preference saved!", Toast.LENGTH_SHORT );
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
 
-                    newPrefTitle = input.getText().toString();
+                Log.d("Test for pos", prefSelections.toString());
 
-                    al.add(newPrefTitle);
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
 
-            builder.show();
-    }
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("New Preference");
+
+                // Set up the input
+                final EditText input = new EditText(myView.getContext());
+
+                // Specify the type of input expected
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                //This is all to get some margin on the dialog box
+                FrameLayout container = new FrameLayout(v.getContext());
+                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                input.setLayoutParams(params);
+                container.addView(input);
+
+                builder.setView(container);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        newPrefTitle = input.getText().toString();
+
+                        al.add(newPrefTitle);
+
+                        //Add to database
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        }
     }
 }
