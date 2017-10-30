@@ -114,6 +114,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_row="4"
         android:textColor="#191919"
-        android:textSize="22.5dp" />
+        android:textSize="21dp" />
 
 </GridLayout>

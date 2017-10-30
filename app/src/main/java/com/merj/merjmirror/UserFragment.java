@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
+import android.text.Selection;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ??? on 9/27/2017.
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 public class UserFragment extends Fragment {
     View myView;
     UserSelectedListener mCallback;
-    String newUser = "";
+    String user = "";
     //Array List is way better than basic arrays for this.
     ArrayList al = new ArrayList();
 
@@ -49,8 +51,9 @@ public class UserFragment extends Fragment {
         Button deleteUserButton = (Button) myView.findViewById(R.id.delete_user_button);
 
         UserFragment.MessagePopUp clicks = new UserFragment.MessagePopUp();
+        UserFragment.ListPopUp lists = new UserFragment.ListPopUp();
         newUserButton.setOnClickListener(clicks);
-        deleteUserButton.setOnClickListener(clicks);
+        deleteUserButton.setOnClickListener(lists);
 
         //List crap
         adaptArray(al);
@@ -72,17 +75,12 @@ public class UserFragment extends Fragment {
 
     public class MessagePopUp implements AdapterView.OnClickListener {
         public void onClick(View v) {
-            // implements your things
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
-            builder.setTitle(v.toString().contains("add") ? "New User" : "Delete User");
-            //builder.setTitle("New User");
-
-            //Log.d("Testing", v.toString());
+            builder.setTitle("New User");
 
             // Set up the input
             final EditText input = new EditText(v.getContext());
-            // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
             input.setInputType(InputType.TYPE_CLASS_TEXT);
 
             //This is all to get some margin on the dialog box
@@ -99,13 +97,11 @@ public class UserFragment extends Fragment {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    newUser = input.getText().toString();
-                    //Toast toast = Toast.makeText(myView.getContext(), "Your new user is " + newUser, Toast.LENGTH_SHORT );
-                    //toast.setGravity(Gravity.CENTER, 0, 0);
-                    //toast.show();
+                    user = input.getText().toString();
 
                     //Adding the new user to the list and then updating it
-                    al.add(newUser);
+                    al.add(user);
+
                     adaptArray(al);
                 }
             });
@@ -117,6 +113,40 @@ public class UserFragment extends Fragment {
             });
 
             builder.show();
+        }
+    }
+
+    public class ListPopUp implements AdapterView.OnClickListener {
+        public void onClick(View v) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(v.getContext());
+
+            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.select_dialog_singlechoice);
+
+            arrayAdapter.addAll(al);
+
+            builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    String user = arrayAdapter.getItem(which);
+
+                    Toast toast = Toast.makeText(myView.getContext(), user + " deleted.", Toast.LENGTH_SHORT );
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+
+                    al.remove(user);
+
+                    adaptArray(al);
+                }
+            });
+            builderSingle.show();
+
         }
     }
 
