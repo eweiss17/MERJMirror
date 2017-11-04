@@ -33,22 +33,8 @@ public class SettingsFragment extends Fragment {
                 IpAddress = IpEditText.getText().toString();
             }
         });
-        CreateSpinners();
+
         return myView;
     }
 
-    public void CreateSpinners(){
-
-        Spinner TimeZoneSpinner = (Spinner) myView.findViewById(R.id.spinner10);
-        ArrayAdapter<CharSequence> TimeZoneAA = ArrayAdapter.createFromResource(this.getActivity(),
-                R.array.time_zone_array, android.R.layout.simple_spinner_item);
-        TimeZoneAA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        TimeZoneSpinner.setAdapter(TimeZoneAA);
-
-        Spinner BirthMonthSpinner = (Spinner) myView.findViewById(R.id.spinner11);
-        ArrayAdapter<CharSequence> BirthMonthAA = ArrayAdapter.createFromResource(this.getActivity(),
-                R.array.month_array, android.R.layout.simple_spinner_item);
-        BirthMonthAA.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        BirthMonthSpinner.setAdapter(BirthMonthAA);
-    }
 }

@@ -14,12 +14,12 @@
     <string-array name="preferences_array">
         <item>Empty</item>
         <item>Weather</item>
-        <item>Calendar</item>
+        <item>News</item>
         <item>Clock</item>
-        <item>Stocks</item>
-        <item>Reminders</item>
+        <item>Stock</item>
+        <item>Reminder</item>
         <item>Horoscope</item>
-        <item>Comics</item>
+        <item>Comic</item>
     </string-array>
 
     <string-array name="time_zone_array">
@@ -31,18 +31,28 @@
         <item>Hawaii</item>
     </string-array>
 
-    <string-array name="month_array">
-        <item>January</item>
-        <item>February</item>
-        <item>March</item>
-        <item>April</item>
-        <item>May</item>
-        <item>June</item>
-        <item>July</item>
-        <item>August</item>
-        <item>September</item>
-        <item>October</item>
-        <item>November</item>
-        <item>December</item>
+    <string-array name="horoscope_array">
+        <item>Aries</item>
+        <item>Taurus</item>
+        <item>Gemini</item>
+        <item>Cancer</item>
+        <item>Leo</item>
+        <item>Virgo</item>
+        <item>Libra</item>
+        <item>Scorpio</item>
+        <item>Sagittarius</item>
+        <item>Capricorn</item>
+        <item>Aquarius</item>
+        <item>Pisces</item>
+    </string-array>
+
+    <string-array name="news_array">
+        <item>Wall Street Journal</item>
+        <item>New York Times</item>
+        <item>USA Today</item>
+        <item>CNN</item>
+        <item>ESPN</item>
+        <item>Business Insider</item>
+        <item>TechRadar</item>
     </string-array>
 </resources>

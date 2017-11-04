@@ -3,10 +3,9 @@ package com.merj.merjmirror;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,26 +17,41 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageSwitcher;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
 /**
  * Created by Chad Roxx on 9/27/2017.
+ *
+ * Work to be done here still:
+ * UserInput must be translated into api format
+ * UserInput must then be added into database string
+ * UserInput must change when spinners change
  */
 
 public class PreferenceFragment extends Fragment {
 
     View myView;
-    String[] SelectedPreferences = new String[8];
+    //User input from each preference location, not yet included in loads or saves
+    String[] UserInput = new String[7];
+    //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
+    Boolean UserInputUnsaved = Boolean.TRUE;
     ArrayList al = new ArrayList();
     ArrayList prefSelections = new ArrayList();
     String newPrefTitle = "";
+
+    Spinner spinner1;
+    Spinner spinner2;
+    Spinner spinner3;
+    Spinner spinner4;
+    Spinner spinner6;
+    Spinner spinner7;
+    Spinner spinner8;
+    Spinner spinner9;
 
     @Nullable
     @Override
@@ -68,15 +82,14 @@ public class PreferenceFragment extends Fragment {
 
     public void CreateSpinners() {
 
-        Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
-        Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
-        Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
-        Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
-        //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
-        Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
-        Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
-        Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
-        Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
+        spinner1 = (Spinner) myView.findViewById(R.id.spinner);
+        spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
+        spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
+        spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
+        spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
+        spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
+        spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
+        spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> PreferenceNames = ArrayAdapter.createFromResource(this.getActivity(),
@@ -90,7 +103,6 @@ public class PreferenceFragment extends Fragment {
         spinner2.setAdapter(PreferenceNames);
         spinner3.setAdapter(PreferenceNames);
         spinner4.setAdapter(PreferenceNames);
-        //spinner5.setAdapter(PreferenceNames);
         spinner6.setAdapter(PreferenceNames);
         spinner7.setAdapter(PreferenceNames);
         spinner8.setAdapter(PreferenceNames);
@@ -107,8 +119,6 @@ public class PreferenceFragment extends Fragment {
         spinnerListener.onItemSelected(spinner3, spinner3, 2, 0);
         spinner4.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner4, spinner4, 3, 0);
-        //spinner5.setOnItemSelectedListener(spinnerListener);
-        //spinnerListener.onItemSelected(spinner5, spinner5, 4, 0);
         spinner6.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner6, spinner6, 4, 0);
         spinner7.setOnItemSelectedListener(spinnerListener);
@@ -118,7 +128,6 @@ public class PreferenceFragment extends Fragment {
         spinner9.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner9, spinner9, 7, 0);
         // only passes the spinner. The numbers are irrelevant afaik.
-
     }
 
     public void CreatePreferenceSelectionList() {
@@ -161,19 +170,11 @@ public class PreferenceFragment extends Fragment {
             String ItemName = spinner.getSelectedItem().toString();
 
             //This is mainly here to see if i can get it to work, will need to make cleaner in future
-            Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
-            Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
-            Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
-            Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
-            //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
-            Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
-            Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
-            Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
-            Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
             if (spinner.toString().contains("preference_list")) {
 
                 //Pull data from database
+                UserInputUnsaved = Boolean.FALSE;
 
                 //Test until we get real data
                 if (ItemName == "Day") {
@@ -181,7 +182,6 @@ public class PreferenceFragment extends Fragment {
                     spinner2.setSelection(3);
                     spinner3.setSelection(2);
                     spinner4.setSelection(6);
-                    //spinner5.setSelection(1);
                     spinner6.setSelection(2);
                     spinner7.setSelection(3);
                     spinner8.setSelection(4);
@@ -192,65 +192,86 @@ public class PreferenceFragment extends Fragment {
                     spinner2.setSelection(6);
                     spinner3.setSelection(6);
                     spinner4.setSelection(6);
-                   //spinner5.setSelection(6);
                     spinner6.setSelection(6);
                     spinner7.setSelection(6);
                     spinner8.setSelection(6);
                     spinner9.setSelection(6);
                 }
                 else {
-                    spinner1.setSelection(0);
-                    spinner2.setSelection(0);
-                    spinner3.setSelection(0);
-                    spinner4.setSelection(0);
-                    //spinner5.setSelection(0);
-                    spinner6.setSelection(0);
+                    spinner1.setSelection(1);
+                    spinner2.setSelection(5);
+                    spinner3.setSelection(4);
+                    spinner4.setSelection(3);
+                    spinner6.setSelection(2);
                     spinner7.setSelection(0);
                     spinner8.setSelection(0);
                     spinner9.setSelection(0);
                 }
-            }
-            else {
-                switch (ItemName) {
 
+                //The spinner listener only acts after the whole if statement is executed, thus we needed a delay.
+                new CountDownTimer(1000, 1000) {
+                    public void onFinish() {
+                        // When timer is finished
+                        UserInputUnsaved = Boolean.TRUE;
+                    }
+                    public void onTick(long millisUntilFinished) {
+                        // millisUntilFinished    The amount of time until finished.
+                    }
+                }.start();
+
+            }
+            else if (UserInputUnsaved){
+
+                switch (ItemName) {
                     //sports?
                     case "Weather":
                         //view.setBackground(weather);
-                        SelectedPreferences[pos] = ItemName;
-                        // ^^inside because it crashes outside
+                        String BuilderTitle = "Enter Weather Location";
+                        String Example = "Toledo, OH";
+                        CreatePrefPopUpBox(BuilderTitle, Example, pos);
                         break;
                     case "Calendar":
                         //view.setBackground(calendar);
-                        SelectedPreferences[pos] = ItemName;
                         break;
                     case "Horoscope":
                         //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
-                        SelectedPreferences[pos] = ItemName;
+                        String BuilderTitle1 = "Enter Zodiac Sign";
+                        String Example1 = "Sagittarius";
+                        CreatePrefPopUpBox(BuilderTitle1, Example1, pos);
                         break;
-                    case "Comics":
+                    case "Comic":
                         //view.setBackground(getActivity().getDrawable(R.drawable.comics));
-                        SelectedPreferences[pos] = ItemName;
                         break;
                     case "News":
                         //view.setBackground(getActivity().getDrawable(R.drawable.news));
-                        SelectedPreferences[pos] = ItemName;
+                        String BuilderTitle2 = "Enter News Source";
+                        String Example2 = "New York Times";
+                        CreatePrefPopUpBox(BuilderTitle2, Example2, pos);
+
+                        //this line converts the input into the API code
+                        if (UserInput[pos] == "New York Times") UserInput[pos] = "the-new-york-times";
+
                         break;
-                    case "Reminders":
+                    case "Reminder":
                         //view.setBackground(getActivity().getDrawable(R.drawable.notes));
-                        SelectedPreferences[pos] = ItemName;
+                        String BuilderTitle3 = "Enter a Reminder";
+                        String Example3 = "Don't forget to buy eggs!";
+                        CreatePrefPopUpBox(BuilderTitle3, Example3, pos);
                         break;
-                    case "Stocks":
+                    case "Stock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
-                        SelectedPreferences[pos] = ItemName;
+                        String BuilderTitle4 = "Enter Stock Code";
+                        String Example4 = "AAPL";
+                        CreatePrefPopUpBox(BuilderTitle4, Example4, pos);
                         break;
                     case "Clock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.clock));
-                        SelectedPreferences[pos] = ItemName;
                         break;
                     default:
                         break;
                 }
             }
+            else {}
         }
 
         public void onNothingSelected(AdapterView parent) {
@@ -258,20 +279,49 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
+    public void CreatePrefPopUpBox(String BuilderTitle, final String Example, final int pos) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
+
+        builder.setTitle(BuilderTitle);
+
+        // Set up the input
+        final EditText input = new EditText(myView.getContext());
+        input.setHint(Example);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        //This is all to get some margin on the dialog box
+        FrameLayout container = new FrameLayout(myView.getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        input.setLayoutParams(params);
+        container.addView(input);
+
+        builder.setView(container);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UserInput[pos] = input.getText().toString();
+                if (UserInput[pos].isEmpty()) UserInput[pos] = Example;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
     //Pop up box for new user button
     public class ButtonPopUpBox implements AdapterView.OnClickListener {
         public void onClick(View v) {
             if (v.toString().contains("save_button")) {
-
-                Spinner spinner1 = (Spinner) myView.findViewById(R.id.spinner);
-                Spinner spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
-                Spinner spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
-                Spinner spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
-                //Spinner spinner5 = (Spinner) myView.findViewById(R.id.spinner5);
-                Spinner spinner6 = (Spinner) myView.findViewById(R.id.spinner6);
-                Spinner spinner7 = (Spinner) myView.findViewById(R.id.spinner7);
-                Spinner spinner8 = (Spinner) myView.findViewById(R.id.spinner8);
-                Spinner spinner9 = (Spinner) myView.findViewById(R.id.spinner9);
 
                 prefSelections.clear();
 
@@ -284,6 +334,8 @@ public class PreferenceFragment extends Fragment {
                 prefSelections.add(spinner8.getSelectedItem());
                 prefSelections.add(spinner9.getSelectedItem());
 
+                //Use UserInput[] here
+
                 //Submit all changes to database here
 
                 Toast toast = Toast.makeText(myView.getContext(), "Preference saved!", Toast.LENGTH_SHORT );
@@ -291,7 +343,6 @@ public class PreferenceFragment extends Fragment {
                 toast.show();
 
                 Log.d("Test for pos", prefSelections.toString());
-
 
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
