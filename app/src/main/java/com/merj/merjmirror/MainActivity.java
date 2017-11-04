@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity
     //UserFragment userFragment = new UserFragment();
     //PreferenceFragment preferenceFragment = new PreferenceFragment();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +44,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void StartupRoutine() {
-        /*connect to mirror*/
+        /*if needed
+        connect to mirror*/
     }
 
     private void NavigationViewStart() {
