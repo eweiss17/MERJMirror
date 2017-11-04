@@ -3,12 +3,12 @@ package com.merj.merjmirror;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.text.InputType;
-import android.text.Selection;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +21,29 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import org.json.JSONArray;
+
 import java.util.ArrayList;
-import java.util.List;
+
+import database.PutUtility;
 
 /**
  * Created by ??? on 9/27/2017.
  */
 
-public class UserFragment extends Fragment {
+public class UserFragment extends Fragment  {
     View myView;
     UserSelectedListener mCallback;
-    String user = "";
     //Array List is way better than basic arrays for this.
-    ArrayList al = new ArrayList();
+    final ArrayList al = new ArrayList();
+    JSONObject jobj = null;
+    String ab;
+    static JSONArray jarr = null;
 
     @Nullable
     @Override
@@ -41,10 +51,8 @@ public class UserFragment extends Fragment {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
         //Hardcoded until access to database. Can use these for testing
-        al.add("Megan");
-        al.add("Eric");
-        al.add("Ryan");
-        al.add("James");
+        //connectToDatabase();
+        new GetData().execute();
 
         //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
@@ -97,12 +105,14 @@ public class UserFragment extends Fragment {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    user = input.getText().toString();
+                    String user = input.getText().toString();
 
                     //Adding the new user to the list and then updating it
                     al.add(user);
 
                     adaptArray(al);
+
+                    new SendData().execute(user);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -143,6 +153,10 @@ public class UserFragment extends Fragment {
                     al.remove(user);
 
                     adaptArray(al);
+
+                    Log.d("chicken", user);
+
+                    new DeleteData().execute(user);
                 }
             });
             builderSingle.show();
@@ -173,4 +187,115 @@ public class UserFragment extends Fragment {
                     + " must implement UserSelectedListener");
         }
     }
+
+    //Home Ip adress 192.168.0.14
+
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog mProgressDialog;
+        private String res;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(myView.getContext(),
+                    "", "Please wait...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            res = null;
+            PutUtility put = new PutUtility();
+
+            try {
+                res = put.getData("http://172.31.214.43/android_connect/get_user_data.php");
+                Log.v("Pizza", res);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+
+        }
+
+        protected void onPostExecute(String res) {
+            //"Here you get response from server in res"
+            Log.d("Pie", res);
+
+            try {
+                jarr = new JSONArray(res);
+
+                for(int n = 0; n < jarr.length(); n++)
+                {
+                    jobj = jarr.getJSONObject(n);
+                    al.add(jobj.getString("userName"));
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            adaptArray(al);
+
+            mProgressDialog.cancel();
+        }
+    }
+
+    private class DeleteData extends AsyncTask<String, Void, String> {
+
+        private String res;
+
+        @Override
+        protected String doInBackground(String... params) {
+            res = null;
+            PutUtility put = new PutUtility();
+
+            put.setParam("userName", params[0].toString());
+
+            try {
+                res = put.postData("http://172.31.214.43/android_connect/delete_user.php");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+
+        }
+
+        protected void onPostExecute(String res) {
+            //"Here you get response from server in res"
+            //Log.v("Turkey", res);
+        }
+    }
+
+    private class SendData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog mProgressDialog;
+        private String res;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(myView.getContext(),
+                    "", "Please wait...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            res = null;
+            PutUtility put = new PutUtility();
+
+            put.setParam("userName", params[0].toString());
+
+            try {
+                res = put.postData("http://172.31.214.43/android_connect/add_user.php");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+
+        }
+
+        protected void onPostExecute(String res) {
+            //"Here you get response from server in res"
+            mProgressDialog.cancel();
+        }
+    }
+
 }
