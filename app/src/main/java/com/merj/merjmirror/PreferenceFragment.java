@@ -2,7 +2,9 @@ package com.merj.merjmirror;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -21,7 +23,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+
+import database.PutUtility;
 
 
 /**
@@ -40,9 +48,14 @@ public class PreferenceFragment extends Fragment {
     String[] UserInput = new String[7];
     //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
-    ArrayList al = new ArrayList();
+    ArrayList setPreferenceList = new ArrayList();
     ArrayList prefSelections = new ArrayList();
-    String newPrefTitle = "";
+    String newPrefListTitle = "";
+    static String userID = null;
+    JSONObject jobj = null;
+    static JSONArray jarr = null;
+    //Eric Home Ip address 192.168.0.6
+    static String ipAddress = "192.168.0.6";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -60,6 +73,8 @@ public class PreferenceFragment extends Fragment {
 
         Button newPrefButton = (Button) myView.findViewById(R.id.add_new_button);
         Button saveButton = (Button) myView.findViewById(R.id.save_button);
+
+        userID = (getArguments() != null ? getArguments().getString("UserID") : "0");
 
         //Creating Default data
         CreatePreferenceSelectionList();
@@ -133,12 +148,13 @@ public class PreferenceFragment extends Fragment {
     public void CreatePreferenceSelectionList() {
         Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
-        //grab initial info from database
-        al.add("Default");
-        al.add("Day");
+        //Connecting to database
+        //This default is required, if this list is empty, a null pointer exception will occur
+        setPreferenceList.add("Default");
+        new GetData().execute(userID);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
-                android.R.layout.simple_spinner_item, al);
+                android.R.layout.simple_spinner_item, setPreferenceList);
 
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -318,7 +334,7 @@ public class PreferenceFragment extends Fragment {
         builder.show();
     }
 
-    //Pop up box for new user button
+    //Pop up box for new preference button
     public class ButtonPopUpBox implements AdapterView.OnClickListener {
         public void onClick(View v) {
             if (v.toString().contains("save_button")) {
@@ -342,7 +358,7 @@ public class PreferenceFragment extends Fragment {
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-                Log.d("Test for pos", prefSelections.toString());
+                //Log.d("Test for pos", prefSelections.toString());
 
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
@@ -369,9 +385,9 @@ public class PreferenceFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        newPrefTitle = input.getText().toString();
+                        newPrefListTitle = input.getText().toString();
 
-                        al.add(newPrefTitle);
+                        setPreferenceList.add(newPrefListTitle);
 
                         //Add to database
                     }
@@ -385,6 +401,58 @@ public class PreferenceFragment extends Fragment {
 
                 builder.show();
             }
+        }
+    }
+
+    //These classes are for database connections
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog mProgressDialog;
+        private String res;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(myView.getContext(),
+                    "", "Please wait...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            res = null;
+            PutUtility put = new PutUtility();
+
+            put.setParam("UserID", params[0].toString());
+
+            //EVEN THOUGH THIS IS A GET, I AM USING POST TO SPECIFY WHICH ID
+            try {
+                res = put.postData("http://"+ipAddress+"/android_connect/get_preference_data.php");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+        }
+
+        protected void onPostExecute(String res) {
+            //Here you get response from server in res
+            Log.d("GET Response PREF", res);
+
+            //This is sorting the data into a JSON array and Object to acquire wanted data
+            try {
+                jarr = new JSONArray(res);
+                //setPreferenceList.clear();
+                for(int n = 0; n < jarr.length(); n++)
+                {
+                    jobj = jarr.getJSONObject(n);
+                    setPreferenceList.add(jobj.getString("DataDisplay"));
+                    //userIDList.add(jobj.getInt("UserID"));
+                }
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            //adaptArray(userList);
+            mProgressDialog.cancel();
         }
     }
 }

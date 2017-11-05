@@ -128,43 +128,29 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void onUserSelected(String userName) {
+    //This is connecting from the UserFragment and sending information to the Preference Fragment
+    public void onUserSelected(String userName, String userID) {
 
         PreferenceFragment prefFrag = (PreferenceFragment)
                 getFragmentManager().findFragmentById(R.id.nav_preference_layout);
 
-        // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
-
-        //Menu menu = navView.getMenu();
-        //Log.d("ChECking", userName);
-
 
         if (prefFrag != null) {
-            // If article frag is available, we're in two-pane layout...
 
-            // Call a method in the ArticleFragment to update its content
-            prefFrag.setText(userName);
-            //prefFrag.updateArticleView(position);
+            //This is never going to happen
 
         } else {
-                // Otherwise, we're in the one-pane layout and must swap frags...
-
                 FragmentManager fragmentManager = getFragmentManager();
 
                 // Create fragment and give it an argument for the selected article
                 PreferenceFragment newFragment = new PreferenceFragment();
                 Bundle args = new Bundle();
                 args.putString("UserName", userName);
+                args.putString("UserID", userID);
                 newFragment.setArguments(args);
 
                 fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
-                //onNavigationItemSelected(menu.getItem(2));
-                //drawer.clearFocus();
-                //newFragment.setText(userName);
 
         }
-
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     }
 }

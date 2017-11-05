@@ -22,10 +22,8 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -39,19 +37,19 @@ import database.PutUtility;
 public class UserFragment extends Fragment  {
     View myView;
     UserSelectedListener mCallback;
-    //Array List is way better than basic arrays for this.
-    final ArrayList al = new ArrayList();
+    final ArrayList userList = new ArrayList();
+    final ArrayList userIDList = new ArrayList();
     JSONObject jobj = null;
-    String ab;
     static JSONArray jarr = null;
+    //Eric Home Ip address 192.168.0.6
+    static String ipAddress = "192.168.0.6";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
-        //Hardcoded until access to database. Can use these for testing
-        //connectToDatabase();
+        //Connecting to database
         new GetData().execute();
 
         //Button crap
@@ -63,8 +61,7 @@ public class UserFragment extends Fragment  {
         newUserButton.setOnClickListener(clicks);
         deleteUserButton.setOnClickListener(lists);
 
-        //List crap
-        adaptArray(al);
+        adaptArray(userList);
 
         return myView;
     }
@@ -108,10 +105,8 @@ public class UserFragment extends Fragment  {
                     String user = input.getText().toString();
 
                     //Adding the new user to the list and then updating it
-                    al.add(user);
-
-                    adaptArray(al);
-
+                    userList.add(user);
+                    adaptArray(userList);
                     new SendData().execute(user);
                 }
             });
@@ -132,7 +127,7 @@ public class UserFragment extends Fragment  {
 
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.select_dialog_singlechoice);
 
-            arrayAdapter.addAll(al);
+            arrayAdapter.addAll(userList);
 
             builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                 @Override
@@ -150,13 +145,11 @@ public class UserFragment extends Fragment  {
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
 
-                    al.remove(user);
-
-                    adaptArray(al);
-
-                    Log.d("chicken", user);
-
+                    //Deleting user from list and database
+                    userList.remove(user);
+                    adaptArray(userList);
                     new DeleteData().execute(user);
+
                 }
             });
             builderSingle.show();
@@ -164,16 +157,19 @@ public class UserFragment extends Fragment  {
         }
     }
 
+    //These classes connect this fragment to main activity
     public class UserSelected implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
             String userName = list.getItemAtPosition(pos).toString();
-            mCallback.onUserSelected(userName);
+            int f = userList.indexOf(userName);
+            String userID = userIDList.get(f).toString();
+            mCallback.onUserSelected(userName, userID);
         }
     }
 
     public interface UserSelectedListener {
-        public void onUserSelected(String userName);
+        public void onUserSelected(String userName, String userID);
     }
 
     @Override
@@ -188,8 +184,7 @@ public class UserFragment extends Fragment  {
         }
     }
 
-    //Home Ip adress 192.168.0.14
-
+    //These classes are for database connections
     private class GetData extends AsyncTask<String, Void, String> {
 
         ProgressDialog mProgressDialog;
@@ -207,34 +202,33 @@ public class UserFragment extends Fragment  {
             PutUtility put = new PutUtility();
 
             try {
-                res = put.getData("http://172.31.214.43/android_connect/get_user_data.php");
-                Log.v("Pizza", res);
+                res = put.getData("http://"+ipAddress+"/android_connect/get_user_data.php");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return res;
-
         }
 
         protected void onPostExecute(String res) {
-            //"Here you get response from server in res"
-            Log.d("Pie", res);
+            //Here you get response from server in res
+            Log.d("GET Response", res);
 
+            //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
 
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
-                    al.add(jobj.getString("userName"));
+                    userList.add(jobj.getString("UserName"));
+                    userIDList.add(jobj.getInt("UserID"));
                 }
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            adaptArray(al);
-
+            adaptArray(userList);
             mProgressDialog.cancel();
         }
     }
@@ -248,10 +242,10 @@ public class UserFragment extends Fragment  {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("userName", params[0].toString());
+            put.setParam("UserName", params[0].toString());
 
             try {
-                res = put.postData("http://172.31.214.43/android_connect/delete_user.php");
+                res = put.postData("http://"+ipAddress+"/android_connect/delete_user.php");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -260,8 +254,8 @@ public class UserFragment extends Fragment  {
         }
 
         protected void onPostExecute(String res) {
-            //"Here you get response from server in res"
-            //Log.v("Turkey", res);
+            //Here you get response from server in res
+            Log.v("DELETE response", res);
         }
     }
 
@@ -281,19 +275,19 @@ public class UserFragment extends Fragment  {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("userName", params[0].toString());
+            put.setParam("UserName", params[0].toString());
 
             try {
-                res = put.postData("http://172.31.214.43/android_connect/add_user.php");
+                res = put.postData("http://"+ipAddress+"/android_connect/add_user.php");
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return res;
-
         }
 
         protected void onPostExecute(String res) {
             //"Here you get response from server in res"
+            Log.v("POST response", res);
             mProgressDialog.cancel();
         }
     }
