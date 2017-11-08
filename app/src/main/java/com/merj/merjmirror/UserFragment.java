@@ -42,7 +42,7 @@ public class UserFragment extends Fragment  {
     JSONObject jobj = null;
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
-    static String ipAddress = "192.168.0.6";
+    static String ipAddress = "192.168.0.14";
 
     @Nullable
     @Override

@@ -28,6 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.*;
 
 import database.PutUtility;
 
@@ -36,9 +39,9 @@ import database.PutUtility;
  * Created by Chad Roxx on 9/27/2017.
  *
  * Work to be done here still:
- * UserInput must be translated into api format
- * UserInput must then be added into database string
- * UserInput must change when spinners change
+ * UserInput must be translated into api format. Eric is making an object to hold this data
+ * UserInput must then be added into database string. Object will be translated before sending.
+ * UserInput must change when spinners change. Eric has not worked on this yet.
  */
 
 public class PreferenceFragment extends Fragment {
@@ -46,6 +49,9 @@ public class PreferenceFragment extends Fragment {
     View myView;
     //User input from each preference location, not yet included in loads or saves
     String[] UserInput = new String[7];
+    ArrayList position = new ArrayList();
+    ArrayList selection = new ArrayList();
+    ArrayList details = new ArrayList();;
     //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
     ArrayList setPreferenceList = new ArrayList();
@@ -55,7 +61,7 @@ public class PreferenceFragment extends Fragment {
     JSONObject jobj = null;
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
-    static String ipAddress = "192.168.0.6";
+    static String ipAddress = "192.168.0.14";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -184,7 +190,8 @@ public class PreferenceFragment extends Fragment {
         public void onItemSelected(AdapterView<?> spinner, View view, int pos, long id) {
 
             String ItemName = spinner.getSelectedItem().toString();
-
+            Log.d("Cookies d", ItemName);
+            Log.d("Cookies d", spinner.toString());
             //This is mainly here to see if i can get it to work, will need to make cleaner in future
 
             if (spinner.toString().contains("preference_list")) {
@@ -192,16 +199,19 @@ public class PreferenceFragment extends Fragment {
                 //Pull data from database
                 UserInputUnsaved = Boolean.FALSE;
 
+
                 //Test until we get real data
-                if (ItemName == "Day") {
-                    spinner1.setSelection(4);
-                    spinner2.setSelection(3);
-                    spinner3.setSelection(2);
-                    spinner4.setSelection(6);
-                    spinner6.setSelection(2);
-                    spinner7.setSelection(3);
-                    spinner8.setSelection(4);
-                    spinner9.setSelection(5);
+                if (ItemName.equals("Testing")) {
+                    Log.d("Cookies", selection.get(8).toString());
+                    spinner1.setSelection(Integer.parseInt(selection.get(0).toString()));
+                    spinner2.setSelection(Integer.parseInt(selection.get(1).toString()));
+                    //spinner3.setSelection(Integer.parseInt(selection.get(2).toString()));
+                    spinner4.setSelection(Integer.parseInt(selection.get(3).toString()));
+                    spinner6.setSelection(Integer.parseInt(selection.get(5).toString()));
+                    //spinner7.setSelection(Integer.parseInt(selection.get(6).toString()));
+                    spinner8.setSelection(Integer.parseInt(selection.get(7).toString()));
+                   // spinner9.setSelection(Integer.parseInt(selection.get(8).toString()));
+
                 }
                 else if (ItemName == "Night") {
                     spinner1.setSelection(6);
@@ -214,7 +224,7 @@ public class PreferenceFragment extends Fragment {
                     spinner9.setSelection(6);
                 }
                 else {
-                    spinner1.setSelection(1);
+                    spinner1.setSelection(4);
                     spinner2.setSelection(5);
                     spinner3.setSelection(4);
                     spinner4.setSelection(3);
@@ -358,8 +368,6 @@ public class PreferenceFragment extends Fragment {
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-                //Log.d("Test for pos", prefSelections.toString());
-
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("New Preference");
@@ -404,6 +412,20 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
+    //Object
+    public void parse(String rawData) {
+            String [] items = rawData.split(":");
+            for (int i = 0; i < items.length; i++) {
+                String [] rig = items[i].split(",");
+                if (items[i].contains("(")) {
+                    String [] bigRig = items[i].split("\\(");
+                    details.add(bigRig[1]);
+                }
+                position.add(rig[0]);
+                selection.add(rig[1]);
+            }
+    }
+
     //These classes are for database connections
     private class GetData extends AsyncTask<String, Void, String> {
 
@@ -443,8 +465,10 @@ public class PreferenceFragment extends Fragment {
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
-                    setPreferenceList.add(jobj.getString("DataDisplay"));
-                    //userIDList.add(jobj.getInt("UserID"));
+                    setPreferenceList.add(jobj.getString("PrefName"));
+                    //Log.d("DataDisplayString", jobj.getString("DataDisplay"));
+                    parse(jobj.getString("DataDisplay"));
+
                 }
             }
             catch (JSONException e) {

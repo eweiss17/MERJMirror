@@ -1,5 +1,6 @@
 package com.merj.merjmirror;
 
+import android.app.Application;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,5 +37,4 @@ public class SettingsFragment extends Fragment {
 
         return myView;
     }
-
 }
