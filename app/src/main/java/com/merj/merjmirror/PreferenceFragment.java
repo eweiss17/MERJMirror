@@ -49,9 +49,9 @@ public class PreferenceFragment extends Fragment {
     View myView;
     //User input from each preference location, not yet included in loads or saves
     String[] UserInput = new String[7];
-    ArrayList position = new ArrayList();
-    ArrayList selection = new ArrayList();
-    ArrayList details = new ArrayList();;
+    static ArrayList position = new ArrayList();
+    static ArrayList selection = new ArrayList();
+    static ArrayList details = new ArrayList();;
     //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
     ArrayList setPreferenceList = new ArrayList();
@@ -89,7 +89,7 @@ public class PreferenceFragment extends Fragment {
         CreateSpinners();
 
         //Adding a listener to listen to different selections from users preferences
-        ChangesFromDatabase();
+        //ChangesFromDatabase();
 
         //Giving new user button on click functionality
         PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
@@ -157,7 +157,7 @@ public class PreferenceFragment extends Fragment {
         //Connecting to database
         //This default is required, if this list is empty, a null pointer exception will occur
         setPreferenceList.add("Default");
-        new GetData().execute(userID);
+        new GetPrefData().execute(userID);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_spinner_item, setPreferenceList);
@@ -199,39 +199,39 @@ public class PreferenceFragment extends Fragment {
                 //Pull data from database
                 UserInputUnsaved = Boolean.FALSE;
 
+                //Default set everything to Empty
+                spinner1.setSelection(0);
+                spinner2.setSelection(0);
+                spinner3.setSelection(0);
+                spinner4.setSelection(0);
+                spinner6.setSelection(0);
+                spinner7.setSelection(0);
+                spinner8.setSelection(0);
+                spinner9.setSelection(0);
 
-                //Test until we get real data
-                if (ItemName.equals("Testing")) {
-                    Log.d("Cookies", selection.get(8).toString());
-                    spinner1.setSelection(Integer.parseInt(selection.get(0).toString()));
-                    spinner2.setSelection(Integer.parseInt(selection.get(1).toString()));
-                    //spinner3.setSelection(Integer.parseInt(selection.get(2).toString()));
-                    spinner4.setSelection(Integer.parseInt(selection.get(3).toString()));
-                    spinner6.setSelection(Integer.parseInt(selection.get(5).toString()));
-                    //spinner7.setSelection(Integer.parseInt(selection.get(6).toString()));
-                    spinner8.setSelection(Integer.parseInt(selection.get(7).toString()));
-                   // spinner9.setSelection(Integer.parseInt(selection.get(8).toString()));
+                try {
+                    for (int i = 0; i < jarr.length(); i++) {
 
+                        ArrayList<String> selectList;
+                        jobj = jarr.getJSONObject(i);
+                        if (ItemName.equals(jobj.getString("PrefName"))) {
+
+
+                            selectList = parse(jobj.getString("DataDisplay"));
+
+                            spinner1.setSelection(Integer.parseInt(selectList.get(0)));
+                            spinner2.setSelection(Integer.parseInt(selectList.get(1)));
+                            spinner3.setSelection(Integer.parseInt(selectList.get(2)));
+                            spinner4.setSelection(Integer.parseInt(selectList.get(3)));
+                            spinner6.setSelection(Integer.parseInt(selectList.get(5)));
+                            spinner7.setSelection(Integer.parseInt(selectList.get(6)));
+                            spinner8.setSelection(Integer.parseInt(selectList.get(7)));
+                            spinner9.setSelection(Integer.parseInt(selectList.get(8)));
+                        }
+                    }
                 }
-                else if (ItemName == "Night") {
-                    spinner1.setSelection(6);
-                    spinner2.setSelection(6);
-                    spinner3.setSelection(6);
-                    spinner4.setSelection(6);
-                    spinner6.setSelection(6);
-                    spinner7.setSelection(6);
-                    spinner8.setSelection(6);
-                    spinner9.setSelection(6);
-                }
-                else {
-                    spinner1.setSelection(4);
-                    spinner2.setSelection(5);
-                    spinner3.setSelection(4);
-                    spinner4.setSelection(3);
-                    spinner6.setSelection(2);
-                    spinner7.setSelection(0);
-                    spinner8.setSelection(0);
-                    spinner9.setSelection(0);
+                catch (JSONException e) {
+
                 }
 
                 //The spinner listener only acts after the whole if statement is executed, thus we needed a delay.
@@ -413,21 +413,30 @@ public class PreferenceFragment extends Fragment {
     }
 
     //Object
-    public void parse(String rawData) {
-            String [] items = rawData.split(":");
+    public ArrayList<String> parse(String rawData) {
+        ArrayList<String> sl = new ArrayList<String>();
+        String [] items = rawData.split(":");
             for (int i = 0; i < items.length; i++) {
                 String [] rig = items[i].split(",");
                 if (items[i].contains("(")) {
                     String [] bigRig = items[i].split("\\(");
+                    String[] rig2 = bigRig[0].split(",");
+                    position.add(rig2[0]);
+                    sl.add(rig2[1]);
                     details.add(bigRig[1]);
                 }
-                position.add(rig[0]);
-                selection.add(rig[1]);
+                else {
+                    position.add(rig[0]);
+                    sl.add(rig[1]);
+                    //selection.add(rig[1]);
+                    details.add("");
+                }
             }
+            return sl;
     }
 
     //These classes are for database connections
-    private class GetData extends AsyncTask<String, Void, String> {
+    private class GetPrefData extends AsyncTask<String, Void, String> {
 
         ProgressDialog mProgressDialog;
         private String res;
@@ -461,14 +470,13 @@ public class PreferenceFragment extends Fragment {
             //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
-                //setPreferenceList.clear();
+
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
                     setPreferenceList.add(jobj.getString("PrefName"));
-                    //Log.d("DataDisplayString", jobj.getString("DataDisplay"));
-                    parse(jobj.getString("DataDisplay"));
-
+                    //parse(jobj.getString("DataDisplay"));
+                    ChangesFromDatabase();
                 }
             }
             catch (JSONException e) {
