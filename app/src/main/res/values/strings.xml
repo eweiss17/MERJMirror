@@ -13,12 +13,12 @@
     -->
     <string-array name="preferences_array">
         <item>Empty</item>
+        <item>Clock</item>
         <item>Weather</item>
         <item>News</item>
-        <item>Clock</item>
-        <item>Stock</item>
-        <item>Reminder</item>
         <item>Horoscope</item>
+        <item>Stocks</item>
+        <item>Reminder</item>
         <item>Comic</item>
     </string-array>
 

@@ -103,7 +103,7 @@ public class PreferenceFragment extends Fragment {
 
     public void CreateSpinners() {
 
-        spinner1 = (Spinner) myView.findViewById(R.id.spinner);
+        spinner1 = (Spinner) myView.findViewById(R.id.spinner1);
         spinner2 = (Spinner) myView.findViewById(R.id.spinner2);
         spinner3 = (Spinner) myView.findViewById(R.id.spinner3);
         spinner4 = (Spinner) myView.findViewById(R.id.spinner4);
@@ -141,13 +141,13 @@ public class PreferenceFragment extends Fragment {
         spinner4.setOnItemSelectedListener(spinnerListener);
         spinnerListener.onItemSelected(spinner4, spinner4, 3, 0);
         spinner6.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner6, spinner6, 4, 0);
+        spinnerListener.onItemSelected(spinner6, spinner6, 5, 0);
         spinner7.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner7, spinner7, 5, 0);
+        spinnerListener.onItemSelected(spinner7, spinner7, 6, 0);
         spinner8.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner8, spinner8, 6, 0);
+        spinnerListener.onItemSelected(spinner8, spinner8, 7, 0);
         spinner9.setOnItemSelectedListener(spinnerListener);
-        spinnerListener.onItemSelected(spinner9, spinner9, 7, 0);
+        spinnerListener.onItemSelected(spinner9, spinner9, 8, 0);
         // only passes the spinner. The numbers are irrelevant afaik.
     }
 
@@ -170,6 +170,7 @@ public class PreferenceFragment extends Fragment {
 
     public void ChangesFromDatabase() {
         //We should make these globally accessable if we are going to do it like this
+
         Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
         PreferenceFragment.YourItemSelectedListener prefListener = new PreferenceFragment.YourItemSelectedListener();
@@ -189,9 +190,37 @@ public class PreferenceFragment extends Fragment {
 
         public void onItemSelected(AdapterView<?> spinner, View view, int pos, long id) {
 
+            int whichSpinner;
+            if (spinner.toString().contains("spinner1")) {
+                whichSpinner = 0;
+            }
+            else if (spinner.toString().contains("spinner2")) {
+                whichSpinner = 1;
+            }
+            else if (spinner.toString().contains("spinner3")) {
+                whichSpinner = 2;
+            }
+            else if (spinner.toString().contains("spinner4")) {
+                whichSpinner = 3;
+            }
+            else if (spinner.toString().contains("spinner6")) {
+                whichSpinner = 5;
+            }
+            else if (spinner.toString().contains("spinner7")) {
+                whichSpinner = 6;
+            }
+            else if (spinner.toString().contains("spinner8")) {
+                whichSpinner = 7;
+            }
+            else if (spinner.toString().contains("spinner9")) {
+                whichSpinner = 8;
+            }
+            else {
+                whichSpinner = 0;
+            }
+            //Log.d("Pizza", Long.toString(id));
             String ItemName = spinner.getSelectedItem().toString();
-            Log.d("Cookies d", ItemName);
-            Log.d("Cookies d", spinner.toString());
+
             //This is mainly here to see if i can get it to work, will need to make cleaner in future
 
             if (spinner.toString().contains("preference_list")) {
@@ -215,8 +244,6 @@ public class PreferenceFragment extends Fragment {
                         ArrayList<String> selectList;
                         jobj = jarr.getJSONObject(i);
                         if (ItemName.equals(jobj.getString("PrefName"))) {
-
-
                             selectList = parse(jobj.getString("DataDisplay"));
 
                             spinner1.setSelection(Integer.parseInt(selectList.get(0)));
@@ -254,7 +281,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(weather);
                         String BuilderTitle = "Enter Weather Location";
                         String Example = "Toledo, OH";
-                        CreatePrefPopUpBox(BuilderTitle, Example, pos);
+                        CreatePrefPopUpBox(BuilderTitle, Example, whichSpinner);
                         break;
                     case "Calendar":
                         //view.setBackground(calendar);
@@ -263,7 +290,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
                         String BuilderTitle1 = "Enter Zodiac Sign";
                         String Example1 = "Sagittarius";
-                        CreatePrefPopUpBox(BuilderTitle1, Example1, pos);
+                        CreatePrefPopUpBox(BuilderTitle1, Example1, whichSpinner);
                         break;
                     case "Comic":
                         //view.setBackground(getActivity().getDrawable(R.drawable.comics));
@@ -272,7 +299,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.news));
                         String BuilderTitle2 = "Enter News Source";
                         String Example2 = "New York Times";
-                        CreatePrefPopUpBox(BuilderTitle2, Example2, pos);
+                        CreatePrefPopUpBox(BuilderTitle2, Example2, whichSpinner);
 
                         //this line converts the input into the API code
                         if (UserInput[pos] == "New York Times") UserInput[pos] = "the-new-york-times";
@@ -282,13 +309,13 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.notes));
                         String BuilderTitle3 = "Enter a Reminder";
                         String Example3 = "Don't forget to buy eggs!";
-                        CreatePrefPopUpBox(BuilderTitle3, Example3, pos);
+                        CreatePrefPopUpBox(BuilderTitle3, Example3, whichSpinner);
                         break;
                     case "Stock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
                         String Example4 = "AAPL";
-                        CreatePrefPopUpBox(BuilderTitle4, Example4, pos);
+                        CreatePrefPopUpBox(BuilderTitle4, Example4, whichSpinner);
                         break;
                     case "Clock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.clock));
@@ -330,8 +357,9 @@ public class PreferenceFragment extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                UserInput[pos] = input.getText().toString();
-                if (UserInput[pos].isEmpty()) UserInput[pos] = Example;
+                /*UserInput[pos] = input.getText().toString();
+                if (UserInput[pos].isEmpty()) UserInput[pos] = Example;*/
+                details.set(pos, input.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -351,16 +379,23 @@ public class PreferenceFragment extends Fragment {
 
                 prefSelections.clear();
 
+                //#5 empty is because of needing for slot #5
                 prefSelections.add(spinner1.getSelectedItem());
                 prefSelections.add(spinner2.getSelectedItem());
                 prefSelections.add(spinner3.getSelectedItem());
                 prefSelections.add(spinner4.getSelectedItem());
+                prefSelections.add("Empty");
                 prefSelections.add(spinner6.getSelectedItem());
                 prefSelections.add(spinner7.getSelectedItem());
                 prefSelections.add(spinner8.getSelectedItem());
                 prefSelections.add(spinner9.getSelectedItem());
 
+                Log.d("Pizzaa", prefSelections.toString());
+                Log.d("Pizzaaa", details.toString());
+                //prefSelections.add(spinner1.get)
+
                 //Use UserInput[] here
+                parseForDatabase(prefSelections, details);
 
                 //Submit all changes to database here
 
@@ -412,10 +447,60 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
+    public void parseForDatabase(ArrayList<String> data, ArrayList<String> details) {
+        String reparsedString = "";
+        String holder = "";
+        ArrayList<String> intForm = data;
+
+        for (int i = 0; i < intForm.size(); i++) {
+            switch (intForm.get(i)) {
+                case "Clock":
+                    intForm.set(i, "1");
+                    break;
+                case "Weather":
+                    intForm.set(i, "2");
+                    break;
+                case "News":
+                    intForm.set(i, "3");
+                    break;
+                case "Horoscope":
+                    intForm.set(i, "4");
+                    break;
+                case "Stocks":
+                    intForm.set(i, "5");
+                    break;
+                case "Reminder":
+                    intForm.set(i, "6");
+                    break;
+                case "Comic":
+                    intForm.set(i, "7");
+                    break;
+                default:
+                    intForm.set(i, "0");
+                    break;
+            }
+        }
+
+        for (int i = 0; i < intForm.size(); i++){
+            if (details.get(i).toString().equals("Empty")) {
+                reparsedString += holder.concat(Integer.toString(i+1) + "," + intForm.get(i) + ":");
+            }
+            else {
+                reparsedString += holder.concat(Integer.toString(i+1) + "," + intForm.get(i) + "(" + details.get(i) + ":");
+            }
+        }
+        reparsedString = reparsedString.substring(0, reparsedString.length() - 1);
+
+        //new SendPrefData().execute("0",userID);
+
+    }
+
     //Object
     public ArrayList<String> parse(String rawData) {
         ArrayList<String> sl = new ArrayList<String>();
+        Log.d("Butter", rawData);
         String [] items = rawData.split(":");
+        details.clear();
             for (int i = 0; i < items.length; i++) {
                 String [] rig = items[i].split(",");
                 if (items[i].contains("(")) {
@@ -428,8 +513,7 @@ public class PreferenceFragment extends Fragment {
                 else {
                     position.add(rig[0]);
                     sl.add(rig[1]);
-                    //selection.add(rig[1]);
-                    details.add("");
+                    details.add("Empty");
                 }
             }
             return sl;
@@ -484,6 +568,46 @@ public class PreferenceFragment extends Fragment {
             }
 
             //adaptArray(userList);
+            mProgressDialog.cancel();
+        }
+    }
+
+    private class SendPrefData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog mProgressDialog;
+        private String res;
+
+        @Override
+        protected void onPreExecute() {
+            mProgressDialog = ProgressDialog.show(myView.getContext(),
+                    "", "Please wait...");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            res = null;
+            PutUtility put = new PutUtility();
+
+            put.setParam("PrefName", params[0].toString());
+            put.setParam("DataDisplay", params[1].toString());
+            put.setParam("Active", params[2].toString());
+            put.setParam("UserId", params[3].toString());
+
+
+
+            //EVEN THOUGH THIS IS A GET, I AM USING POST TO SPECIFY WHICH ID
+            try {
+                res = put.postData("http://"+ipAddress+"/android_connect/set_preference_data.php");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return res;
+        }
+
+        protected void onPostExecute(String res) {
+            //Here you get response from server in res
+            Log.d("POST Response PREF", res);
+
             mProgressDialog.cancel();
         }
     }
