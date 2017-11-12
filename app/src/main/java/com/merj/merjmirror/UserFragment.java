@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
@@ -29,6 +31,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 import database.PutUtility;
+import database.SavedValues;
 
 /**
  * Created by ??? on 9/27/2017.
@@ -42,15 +45,19 @@ public class UserFragment extends Fragment  {
     JSONObject jobj = null;
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
-    static String ipAddress = "192.168.0.14";
+    //james 192.168.1.107
+    String ipAddress = "this initial value does not get used";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
-        //Connecting to database
-        new GetData().execute();
+        ipAddress = SavedValues.getIP(getContext());
+
+        //This doesn't have to be in a box. It was just a simple way to avoid conflicting with getData
+        //getData is is in here
+        GetIPAddressWithAPopUpBox();
 
         //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
@@ -62,8 +69,53 @@ public class UserFragment extends Fragment  {
         deleteUserButton.setOnClickListener(lists);
 
         adaptArray(userList);
-
         return myView;
+    }
+
+
+    public void GetIPAddressWithAPopUpBox(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
+
+        builder.setTitle("Enter IP Address");
+
+        // Set up the input
+        final EditText input = new EditText(myView.getContext());
+        input.setText(ipAddress);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        //This is all to get some margin on the dialog box
+        FrameLayout container = new FrameLayout(myView.getContext());
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        input.setLayoutParams(params);
+        container.addView(input);
+
+        builder.setView(container);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                ipAddress = input.getText().toString();
+
+                //can't use until details has existing data loaded from database
+                //details.set(whichSpinner, input.getText().toString());
+
+                SavedValues.setIP(getContext(), ipAddress);
+
+                new GetData().execute();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     void adaptArray(ArrayList listData) {

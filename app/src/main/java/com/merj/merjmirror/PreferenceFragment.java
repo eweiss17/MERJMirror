@@ -28,9 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.*;
 
 import database.PutUtility;
 
@@ -42,6 +39,7 @@ import database.PutUtility;
  * UserInput must be translated into api format. Eric is making an object to hold this data
  * UserInput must then be added into database string. Object will be translated before sending.
  * UserInput must change when spinners change. Eric has not worked on this yet.
+ *
  */
 
 public class PreferenceFragment extends Fragment {
@@ -61,7 +59,8 @@ public class PreferenceFragment extends Fragment {
     JSONObject jobj = null;
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
-    static String ipAddress = "192.168.0.14";
+    //James 192.168.1.107
+    static String ipAddress = "192.168.1.107";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -218,7 +217,7 @@ public class PreferenceFragment extends Fragment {
             else {
                 whichSpinner = 0;
             }
-            //Log.d("Pizza", Long.toString(id));
+
             String ItemName = spinner.getSelectedItem().toString();
 
             //This is mainly here to see if i can get it to work, will need to make cleaner in future
@@ -281,7 +280,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(weather);
                         String BuilderTitle = "Enter Weather Location";
                         String Example = "Toledo, OH";
-                        CreatePrefPopUpBox(BuilderTitle, Example, whichSpinner);
+                        CreateDetailsPopUpBox(BuilderTitle, Example, whichSpinner);
                         break;
                     case "Calendar":
                         //view.setBackground(calendar);
@@ -290,7 +289,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
                         String BuilderTitle1 = "Enter Zodiac Sign";
                         String Example1 = "Sagittarius";
-                        CreatePrefPopUpBox(BuilderTitle1, Example1, whichSpinner);
+                        CreateDetailsPopUpBox(BuilderTitle1, Example1, whichSpinner);
                         break;
                     case "Comic":
                         //view.setBackground(getActivity().getDrawable(R.drawable.comics));
@@ -299,7 +298,7 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.news));
                         String BuilderTitle2 = "Enter News Source";
                         String Example2 = "New York Times";
-                        CreatePrefPopUpBox(BuilderTitle2, Example2, whichSpinner);
+                        CreateDetailsPopUpBox(BuilderTitle2, Example2, whichSpinner);
 
                         //this line converts the input into the API code
                         if (UserInput[pos] == "New York Times") UserInput[pos] = "the-new-york-times";
@@ -309,13 +308,13 @@ public class PreferenceFragment extends Fragment {
                         //view.setBackground(getActivity().getDrawable(R.drawable.notes));
                         String BuilderTitle3 = "Enter a Reminder";
                         String Example3 = "Don't forget to buy eggs!";
-                        CreatePrefPopUpBox(BuilderTitle3, Example3, whichSpinner);
+                        CreateDetailsPopUpBox(BuilderTitle3, Example3, whichSpinner);
                         break;
                     case "Stock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
                         String Example4 = "AAPL";
-                        CreatePrefPopUpBox(BuilderTitle4, Example4, whichSpinner);
+                        CreateDetailsPopUpBox(BuilderTitle4, Example4, whichSpinner);
                         break;
                     case "Clock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.clock));
@@ -332,7 +331,7 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
-    public void CreatePrefPopUpBox(String BuilderTitle, final String Example, final int pos) {
+    public void CreateDetailsPopUpBox(String BuilderTitle, final String Example, final int whichSpinner) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
 
@@ -357,9 +356,10 @@ public class PreferenceFragment extends Fragment {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                /*UserInput[pos] = input.getText().toString();
-                if (UserInput[pos].isEmpty()) UserInput[pos] = Example;*/
-                details.set(pos, input.getText().toString());
+
+                //can't use until details has existing data loaded from database
+                //details.set(whichSpinner, input.getText().toString());
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -502,15 +502,14 @@ public class PreferenceFragment extends Fragment {
         String [] items = rawData.split(":");
         details.clear();
             for (int i = 0; i < items.length; i++) {
-                String [] rig = items[i].split(",");
+                String[] rig = items[i].split(",");
                 if (items[i].contains("(")) {
-                    String [] bigRig = items[i].split("\\(");
+                    String[] bigRig = items[i].split("\\(");
                     String[] rig2 = bigRig[0].split(",");
                     position.add(rig2[0]);
                     sl.add(rig2[1]);
                     details.add(bigRig[1]);
-                }
-                else {
+                } else {
                     position.add(rig[0]);
                     sl.add(rig[1]);
                     details.add("Empty");
