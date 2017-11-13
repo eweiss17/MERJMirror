@@ -53,7 +53,7 @@ public class UserFragment extends Fragment  {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.user_layout, container, false);
 
-        ipAddress = SavedValues.getIP(getContext());
+        ipAddress = SavedValues.getIP(myView.getContext());
 
         //This doesn't have to be in a box. It was just a simple way to avoid conflicting with getData
         //getData is is in here
@@ -103,9 +103,9 @@ public class UserFragment extends Fragment  {
                 //can't use until details has existing data loaded from database
                 //details.set(whichSpinner, input.getText().toString());
 
-                SavedValues.setIP(getContext(), ipAddress);
+                SavedValues.setIP(myView.getContext(), ipAddress);
 
-                new GetData().execute();
+                new GetUserData().execute();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -159,7 +159,7 @@ public class UserFragment extends Fragment  {
                     //Adding the new user to the list and then updating it
                     userList.add(user);
                     adaptArray(userList);
-                    new SendData().execute(user);
+                    new SendUserData().execute(user);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -200,7 +200,7 @@ public class UserFragment extends Fragment  {
                     //Deleting user from list and database
                     userList.remove(user);
                     adaptArray(userList);
-                    new DeleteData().execute(user);
+                    new DeleteUserData().execute(user);
 
                 }
             });
@@ -237,7 +237,7 @@ public class UserFragment extends Fragment  {
     }
 
     //These classes are for database connections
-    private class GetData extends AsyncTask<String, Void, String> {
+    private class GetUserData extends AsyncTask<String, Void, String> {
 
         ProgressDialog mProgressDialog;
         private String res;
@@ -285,7 +285,7 @@ public class UserFragment extends Fragment  {
         }
     }
 
-    private class DeleteData extends AsyncTask<String, Void, String> {
+    private class DeleteUserData extends AsyncTask<String, Void, String> {
 
         private String res;
 
@@ -311,7 +311,7 @@ public class UserFragment extends Fragment  {
         }
     }
 
-    private class SendData extends AsyncTask<String, Void, String> {
+    private class SendUserData extends AsyncTask<String, Void, String> {
 
         ProgressDialog mProgressDialog;
         private String res;

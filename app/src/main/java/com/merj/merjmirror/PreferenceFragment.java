@@ -33,12 +33,12 @@ import database.PutUtility;
 
 
 /**
- * Created by Chad Roxx on 9/27/2017.
+ * Created by Air-Rick on 9/27/2017.
  *
  * Work to be done here still:
- * UserInput must be translated into api format. Eric is making an object to hold this data
- * UserInput must then be added into database string. Object will be translated before sending.
- * UserInput must change when spinners change. Eric has not worked on this yet.
+ * Make a set active button.
+ * Toggle? set active button on active preference (maybe do depending on how difficult this is)
+ * UserInput must be translated into api format.
  *
  */
 
@@ -47,9 +47,9 @@ public class PreferenceFragment extends Fragment {
     View myView;
     //User input from each preference location, not yet included in loads or saves
     String[] UserInput = new String[7];
-    static ArrayList position = new ArrayList();
-    static ArrayList selection = new ArrayList();
-    static ArrayList details = new ArrayList();;
+    static ArrayList<String> position = new ArrayList();
+    static ArrayList<String> selection = new ArrayList();
+    static ArrayList<String> details = new ArrayList();;
     //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
     ArrayList setPreferenceList = new ArrayList();
@@ -60,7 +60,7 @@ public class PreferenceFragment extends Fragment {
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
     //James 192.168.1.107
-    static String ipAddress = "192.168.1.107";
+    static String ipAddress = "192.168.0.6";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -155,6 +155,8 @@ public class PreferenceFragment extends Fragment {
 
         //Connecting to database
         //This default is required, if this list is empty, a null pointer exception will occur
+        setPreferenceList.clear();
+
         setPreferenceList.add("Default");
         new GetPrefData().execute(userID);
 
@@ -310,7 +312,7 @@ public class PreferenceFragment extends Fragment {
                         String Example3 = "Don't forget to buy eggs!";
                         CreateDetailsPopUpBox(BuilderTitle3, Example3, whichSpinner);
                         break;
-                    case "Stock":
+                    case "Stocks":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
                         String Example4 = "AAPL";
@@ -357,8 +359,7 @@ public class PreferenceFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                //can't use until details has existing data loaded from database
-                //details.set(whichSpinner, input.getText().toString());
+                details.set(whichSpinner, input.getText().toString());
 
             }
         });
@@ -390,14 +391,8 @@ public class PreferenceFragment extends Fragment {
                 prefSelections.add(spinner8.getSelectedItem());
                 prefSelections.add(spinner9.getSelectedItem());
 
-                Log.d("Pizzaa", prefSelections.toString());
-                Log.d("Pizzaaa", details.toString());
-                //prefSelections.add(spinner1.get)
-
-                //Use UserInput[] here
-                parseForDatabase(prefSelections, details);
-
                 //Submit all changes to database here
+                parseForDatabase(prefSelections, details);
 
                 Toast toast = Toast.makeText(myView.getContext(), "Preference saved!", Toast.LENGTH_SHORT );
                 toast.setGravity(Gravity.CENTER, 0, 0);
@@ -432,7 +427,13 @@ public class PreferenceFragment extends Fragment {
 
                         setPreferenceList.add(newPrefListTitle);
 
-                        //Add to database
+                        //Creating default empty on new creation
+                        details.clear();
+                        for (int i = 0; i < 9; i++) {
+                            details.add("Empty");
+                        }
+
+
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -491,14 +492,19 @@ public class PreferenceFragment extends Fragment {
         }
         reparsedString = reparsedString.substring(0, reparsedString.length() - 1);
 
-        //new SendPrefData().execute("0",userID);
+        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
+        String prefName = pref_spinner.getSelectedItem().toString();
+
+        //Sending data
+        new SendPrefData().execute(prefName,reparsedString,"0",userID);
+
+        //ChangesFromDatabase();
 
     }
 
-    //Object
     public ArrayList<String> parse(String rawData) {
         ArrayList<String> sl = new ArrayList<String>();
-        Log.d("Butter", rawData);
+
         String [] items = rawData.split(":");
         details.clear();
             for (int i = 0; i < items.length; i++) {
@@ -517,6 +523,10 @@ public class PreferenceFragment extends Fragment {
             }
             return sl;
     }
+
+
+
+
 
     //These classes are for database connections
     private class GetPrefData extends AsyncTask<String, Void, String> {
@@ -553,12 +563,18 @@ public class PreferenceFragment extends Fragment {
             //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
+                int initialSize = setPreferenceList.size();
 
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
-                    setPreferenceList.add(jobj.getString("PrefName"));
-                    //parse(jobj.getString("DataDisplay"));
+
+                    if (initialSize == 1) {
+                        setPreferenceList.add(jobj.getString("PrefName"));
+                    }
+                    else {
+                        setPreferenceList.set(n + 1,jobj.getString("PrefName"));
+                    }
                     ChangesFromDatabase();
                 }
             }
@@ -592,9 +608,6 @@ public class PreferenceFragment extends Fragment {
             put.setParam("Active", params[2].toString());
             put.setParam("UserId", params[3].toString());
 
-
-
-            //EVEN THOUGH THIS IS A GET, I AM USING POST TO SPECIFY WHICH ID
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/set_preference_data.php");
             } catch (Exception e) {
@@ -608,6 +621,9 @@ public class PreferenceFragment extends Fragment {
             Log.d("POST Response PREF", res);
 
             mProgressDialog.cancel();
+
+            //Getting the new updated data
+            new GetPrefData().execute(userID);
         }
     }
 }

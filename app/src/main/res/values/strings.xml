@@ -47,12 +47,15 @@
     </string-array>
 
     <string-array name="news_array">
-        <item>Wall Street Journal</item>
-        <item>New York Times</item>
-        <item>USA Today</item>
-        <item>CNN</item>
-        <item>ESPN</item>
-        <item>Business Insider</item>
-        <item>TechRadar</item>
+        <item>bbc-news</item>
+        <item>business-insider</item>
+        <item>cnn</item>
+        <item>espn</item>
+        <item>ign</item>
+        <item>independent</item>
+        <item>the-huffington-post</item>
+        <item>the-new-york-times</item>
+        <item>time</item>
+        <item>usa-today</item>
     </string-array>
 </resources>
