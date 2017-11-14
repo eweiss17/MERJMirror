@@ -60,7 +60,7 @@ public class PreferenceFragment extends Fragment {
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
     //James 192.168.1.107
-    static String ipAddress = "192.168.0.6";
+    static String ipAddress = "172.31.198.150";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -158,7 +158,7 @@ public class PreferenceFragment extends Fragment {
         setPreferenceList.clear();
 
         setPreferenceList.add("Default");
-        new GetPrefData().execute(userID);
+        //new GetPrefData().execute(userID);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
                 android.R.layout.simple_spinner_item, setPreferenceList);
@@ -281,26 +281,29 @@ public class PreferenceFragment extends Fragment {
                     case "Weather":
                         //view.setBackground(weather);
                         String BuilderTitle = "Enter Weather Location";
-                        String Example = "Toledo, OH";
-                        CreateDetailsPopUpBox(BuilderTitle, Example, whichSpinner);
+                        String[] detailArray = {"Toledo, OH"};
+                        String boxType = "Text";
+                        CreateDetailsPopUpBox(BuilderTitle, detailArray, whichSpinner,boxType);
                         break;
                     case "Calendar":
                         //view.setBackground(calendar);
                         break;
                     case "Horoscope":
                         //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
-                        String BuilderTitle1 = "Enter Zodiac Sign";
-                        String Example1 = "Sagittarius";
-                        CreateDetailsPopUpBox(BuilderTitle1, Example1, whichSpinner);
+                        String BuilderTitle1 = "Select Zodiac Sign";
+                        String[] detailArray1 = {"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"};
+                        String boxType1 = "RadioButton";
+                        CreateDetailsPopUpBox(BuilderTitle1, detailArray1, whichSpinner, boxType1);
                         break;
                     case "Comic":
                         //view.setBackground(getActivity().getDrawable(R.drawable.comics));
                         break;
                     case "News":
                         //view.setBackground(getActivity().getDrawable(R.drawable.news));
-                        String BuilderTitle2 = "Enter News Source";
-                        String Example2 = "New York Times";
-                        CreateDetailsPopUpBox(BuilderTitle2, Example2, whichSpinner);
+                        String BuilderTitle2 = "Select News Source";
+                        String[] detailArray2 = {"New York Times", "Business Insider", "CNN", "ESPN", "The Independent", "IGN", "Huffington Post", "Time", "USA Today"};
+                        String boxType2 = "RadioButton";
+                        CreateDetailsPopUpBox(BuilderTitle2, detailArray2, whichSpinner, boxType2);
 
                         //this line converts the input into the API code
                         if (UserInput[pos] == "New York Times") UserInput[pos] = "the-new-york-times";
@@ -309,14 +312,15 @@ public class PreferenceFragment extends Fragment {
                     case "Reminder":
                         //view.setBackground(getActivity().getDrawable(R.drawable.notes));
                         String BuilderTitle3 = "Enter a Reminder";
-                        String Example3 = "Don't forget to buy eggs!";
-                        CreateDetailsPopUpBox(BuilderTitle3, Example3, whichSpinner);
+                        String detailArray3[] = {"Don't forget to buy eggs!"};
+                        String boxType3 = "Text";
+                        CreateDetailsPopUpBox(BuilderTitle3, detailArray3, whichSpinner, boxType3);
                         break;
                     case "Stocks":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
                         String Example4 = "AAPL";
-                        CreateDetailsPopUpBox(BuilderTitle4, Example4, whichSpinner);
+                        //CreateDetailsPopUpBox(BuilderTitle4, Example4, whichSpinner);
                         break;
                     case "Clock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.clock));
@@ -333,44 +337,79 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
-    public void CreateDetailsPopUpBox(String BuilderTitle, final String Example, final int whichSpinner) {
+    public void CreateDetailsPopUpBox(String BuilderTitle, final String[] detailArray, final int whichSpinner, String boxType) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
+        if (boxType.equals("RadioButton")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
 
-        builder.setTitle(BuilderTitle);
+            builder.setTitle(BuilderTitle);
 
-        // Set up the input
-        final EditText input = new EditText(myView.getContext());
-        input.setHint(Example);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
+            int checkedItem = 0;
+            builder.setSingleChoiceItems(detailArray, checkedItem, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // when user checks an item
+                }
+            });
 
-        //This is all to get some margin on the dialog box
-        FrameLayout container = new FrameLayout(myView.getContext());
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        input.setLayoutParams(params);
-        container.addView(input);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
 
-        builder.setView(container);
+                    Log.d("pastalavista", Integer.toString(which));
+                    //"which" always returns -1 for some reason
+                    //String newDetail = detailArray[which];
+                    //details.set(whichSpinner, newDetail);
+                }
+            });
+            builder.setNegativeButton("Cancel", null);
 
-        // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                details.set(whichSpinner, input.getText().toString());
+        }else if(boxType.equals("Text")){
 
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
+            AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
 
-        builder.show();
+            builder.setTitle(BuilderTitle);
+
+            // Set up the input
+            final EditText input = new EditText(myView.getContext());
+            input.setHint(detailArray[0]);
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            //This is all to get some margin on the dialog box
+            FrameLayout container = new FrameLayout(myView.getContext());
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+            params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+            input.setLayoutParams(params);
+            container.addView(input);
+
+            builder.setView(container);
+
+            // Set up the buttons
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                    String newDetail = input.getText().toString();
+                    if (newDetail.isEmpty()){
+                        newDetail = detailArray[0];
+                    }
+                    //details.set(whichSpinner, newDetail);
+
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+        }
     }
 
     //Pop up box for new preference button
