@@ -1,9 +1,7 @@
 package com.merj.merjmirror;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
@@ -11,11 +9,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /* Created By Eric the Great and King James VI
 * might need to account for when the app closes and opens, certain changes must be saved*/
@@ -130,27 +125,15 @@ public class MainActivity extends AppCompatActivity
 
     //This is connecting from the UserFragment and sending information to the Preference Fragment
     public void onUserSelected(String userName, String userID) {
+        FragmentManager fragmentManager = getFragmentManager();
 
-        PreferenceFragment prefFrag = (PreferenceFragment)
-                getFragmentManager().findFragmentById(R.id.nav_preference_layout);
+        // Create fragment and give it an argument for the selected article
+        PreferenceFragment newFragment = new PreferenceFragment();
+        Bundle args = new Bundle();
+        args.putString("UserName", userName);
+        args.putString("UserID", userID);
+        newFragment.setArguments(args);
 
-
-        if (prefFrag != null) {
-
-            //This is never going to happen
-
-        } else {
-                FragmentManager fragmentManager = getFragmentManager();
-
-                // Create fragment and give it an argument for the selected article
-                PreferenceFragment newFragment = new PreferenceFragment();
-                Bundle args = new Bundle();
-                args.putString("UserName", userName);
-                args.putString("UserID", userID);
-                newFragment.setArguments(args);
-
-                fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
-
-        }
+        fragmentManager.beginTransaction().replace(R.id.content_frame, newFragment).addToBackStack(null).commit();
     }
 }

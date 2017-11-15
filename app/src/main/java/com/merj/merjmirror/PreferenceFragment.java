@@ -45,22 +45,22 @@ import database.PutUtility;
 public class PreferenceFragment extends Fragment {
 
     View myView;
-    //User input from each preference location, not yet included in loads or saves
+
     String[] UserInput = new String[7];
-    static ArrayList<String> position = new ArrayList();
-    static ArrayList<String> selection = new ArrayList();
-    static ArrayList<String> details = new ArrayList();;
+    static ArrayList<String> position = new ArrayList<>();
+    static ArrayList<String> selection = new ArrayList<>();
+    static ArrayList<String> details = new ArrayList<>();;
+    ArrayList setPreferenceList = new ArrayList();
+    ArrayList<Object> prefSelections = new ArrayList<>();
     //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
-    ArrayList setPreferenceList = new ArrayList();
-    ArrayList prefSelections = new ArrayList();
     String newPrefListTitle = "";
     static String userID = null;
     JSONObject jobj = null;
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
     //James 192.168.1.107
-    static String ipAddress = "172.31.198.150";
+    static String ipAddress = "192.168.0.14";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -158,9 +158,9 @@ public class PreferenceFragment extends Fragment {
         setPreferenceList.clear();
 
         setPreferenceList.add("Default");
-        //new GetPrefData().execute(userID);
+        new GetPrefData().execute(userID);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(),
                 android.R.layout.simple_spinner_item, setPreferenceList);
 
         // Specify the layout to use when the list of choices appears
@@ -259,7 +259,7 @@ public class PreferenceFragment extends Fragment {
                     }
                 }
                 catch (JSONException e) {
-
+                    Log.e("JSON Exception", e.toString());
                 }
 
                 //The spinner listener only acts after the whole if statement is executed, thus we needed a delay.
@@ -345,27 +345,22 @@ public class PreferenceFragment extends Fragment {
             builder.setTitle(BuilderTitle);
 
             int checkedItem = 0;
+
             builder.setSingleChoiceItems(detailArray, checkedItem, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // when user checks an item
+
+                    String newDetail = detailArray[which];
+                    details.set(whichSpinner, newDetail);
+
+                    Log.d("pastalavista", details.toString());
+                    dialog.cancel();
                 }
             });
 
-            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    Log.d("pastalavista", Integer.toString(which));
-                    //"which" always returns -1 for some reason
-                    //String newDetail = detailArray[which];
-                    //details.set(whichSpinner, newDetail);
-                }
-            });
             builder.setNegativeButton("Cancel", null);
 
-            AlertDialog dialog = builder.create();
-            dialog.show();
+            builder.show();
 
         }else if(boxType.equals("Text")){
 
@@ -397,7 +392,7 @@ public class PreferenceFragment extends Fragment {
                     if (newDetail.isEmpty()){
                         newDetail = detailArray[0];
                     }
-                    //details.set(whichSpinner, newDetail);
+                    details.set(whichSpinner, newDetail);
 
                 }
             });
@@ -487,13 +482,13 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
-    public void parseForDatabase(ArrayList<String> data, ArrayList<String> details) {
+    public void parseForDatabase(ArrayList<Object> data, ArrayList<String> details) {
         String reparsedString = "";
         String holder = "";
-        ArrayList<String> intForm = data;
+        ArrayList<Object> intForm = data;
 
         for (int i = 0; i < intForm.size(); i++) {
-            switch (intForm.get(i)) {
+            switch (intForm.get(i).toString()) {
                 case "Clock":
                     intForm.set(i, "1");
                     break;
@@ -537,12 +532,10 @@ public class PreferenceFragment extends Fragment {
         //Sending data
         new SendPrefData().execute(prefName,reparsedString,"0",userID);
 
-        //ChangesFromDatabase();
-
     }
 
     public ArrayList<String> parse(String rawData) {
-        ArrayList<String> sl = new ArrayList<String>();
+        ArrayList<String> sl = new ArrayList<>();
 
         String [] items = rawData.split(":");
         details.clear();
@@ -584,7 +577,7 @@ public class PreferenceFragment extends Fragment {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("UserID", params[0].toString());
+            put.setParam("UserID", params[0]);
 
             //EVEN THOUGH THIS IS A GET, I AM USING POST TO SPECIFY WHICH ID
             try {
@@ -602,6 +595,7 @@ public class PreferenceFragment extends Fragment {
             //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
+                //setPreferenceList.remove("Default");
                 int initialSize = setPreferenceList.size();
 
                 for(int n = 0; n < jarr.length(); n++)
@@ -613,6 +607,7 @@ public class PreferenceFragment extends Fragment {
                     }
                     else {
                         setPreferenceList.set(n + 1,jobj.getString("PrefName"));
+                        //setPreferenceList.set(n,jobj.getString("PrefName"));
                     }
                     ChangesFromDatabase();
                 }
@@ -642,10 +637,10 @@ public class PreferenceFragment extends Fragment {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("PrefName", params[0].toString());
-            put.setParam("DataDisplay", params[1].toString());
-            put.setParam("Active", params[2].toString());
-            put.setParam("UserId", params[3].toString());
+            put.setParam("PrefName", params[0]);
+            put.setParam("DataDisplay", params[1]);
+            put.setParam("Active", params[2]);
+            put.setParam("UserId", params[3]);
 
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/set_preference_data.php");
