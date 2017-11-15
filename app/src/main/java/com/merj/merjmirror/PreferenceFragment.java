@@ -30,10 +30,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import database.PutUtility;
+import database.SavedValues;
 
 
 /**
- * Created by Air-Rick on 9/27/2017.
+ * Created by Air-Bud on 9/27/1997.
  *
  * Work to be done here still:
  * Make a set active button.
@@ -60,7 +61,7 @@ public class PreferenceFragment extends Fragment {
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
     //James 192.168.1.107
-    static String ipAddress = "192.168.0.14";
+    static String ipAddress;
 
     Spinner spinner1;
     Spinner spinner2;
@@ -75,6 +76,8 @@ public class PreferenceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.preference_layout, container, false);
+
+        ipAddress = SavedValues.getIP(myView.getContext());
 
         Button newPrefButton = (Button) myView.findViewById(R.id.add_new_button);
         Button saveButton = (Button) myView.findViewById(R.id.save_button);
@@ -304,10 +307,6 @@ public class PreferenceFragment extends Fragment {
                         String[] detailArray2 = {"New York Times", "Business Insider", "CNN", "ESPN", "The Independent", "IGN", "Huffington Post", "Time", "USA Today"};
                         String boxType2 = "RadioButton";
                         CreateDetailsPopUpBox(BuilderTitle2, detailArray2, whichSpinner, boxType2);
-
-                        //this line converts the input into the API code
-                        if (UserInput[pos] == "New York Times") UserInput[pos] = "the-new-york-times";
-
                         break;
                     case "Reminder":
                         //view.setBackground(getActivity().getDrawable(R.drawable.notes));
@@ -352,6 +351,34 @@ public class PreferenceFragment extends Fragment {
 
                     String newDetail = detailArray[which];
                     details.set(whichSpinner, newDetail);
+
+                    //convert to api code. can move this to separate method if it does not "float your boat"
+                    if (details.get(whichSpinner).equals("New York Times")) details.set(whichSpinner,"the-new-york-times");
+                    else if (details.get(whichSpinner).equals("Business Insider")) details.set(whichSpinner,"business-insider");
+                    else if (details.get(whichSpinner).equals("CNN")) details.set(whichSpinner,"cnn");
+                    else if (details.get(whichSpinner).equals("ESPN")) details.set(whichSpinner,"espn");
+                    else if (details.get(whichSpinner).equals("The Independent")) details.set(whichSpinner,"independent");
+                    else if (details.get(whichSpinner).equals("IGN")) details.set(whichSpinner,"ign");
+                    else if (details.get(whichSpinner).equals("Huffington Post")) details.set(whichSpinner,"the-huffington-post");
+                    else if (details.get(whichSpinner).equals("Time")) details.set(whichSpinner,"time");
+                    else if (details.get(whichSpinner).equals("USA Today")) details.set(whichSpinner,"usa-today");
+
+                    // do not know api code for horoscope yet
+                    /*else if (details.get(whichSpinner).equals("Taurus")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Gemini")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Cancer")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Leo")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Virgo")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Libra")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Scorpio")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Sagittarius")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Capricorn")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Aquarius")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Pisces")) details.set(whichSpinner,"usa-today");
+                    else if (details.get(whichSpinner).equals("Aries")) details.set(whichSpinner,"usa-today");*/
+
+                    //possible weather api format
+                    //Toledo|OH
 
                     Log.d("pastalavista", details.toString());
                     dialog.cancel();

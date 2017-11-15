@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 public class SavedValues {
     private SharedPreferences sharedPreferences;
     private static String PREF_NAME = "prefs";
+    public boolean IPset = false;
 
     public SavedValues() {
         // Blank

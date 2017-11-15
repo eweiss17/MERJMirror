@@ -30,6 +30,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 
+import database.NonSavedValues;
 import database.PutUtility;
 import database.SavedValues;
 
@@ -46,7 +47,8 @@ public class UserFragment extends Fragment  {
     static JSONArray jarr = null;
     //Eric Home Ip address 192.168.0.6
     //james 192.168.1.107
-    String ipAddress = "this initial value does not get used";
+    String ipAddress;
+    Boolean IPset = false;
 
     @Nullable
     @Override
@@ -57,7 +59,10 @@ public class UserFragment extends Fragment  {
 
         //This doesn't have to be in a box. It was just a simple way to avoid conflicting with getData
         //getData is is in here
-        GetIPAddressWithAPopUpBox();
+        if (NonSavedValues.IPset == Boolean.FALSE) {
+            GetIPAddressWithAPopUpBox();
+            NonSavedValues.IPset = true;}
+        else {new GetUserData().execute();}
 
         //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
@@ -99,9 +104,6 @@ public class UserFragment extends Fragment  {
             public void onClick(DialogInterface dialog, int which) {
 
                 ipAddress = input.getText().toString();
-
-                //can't use until details has existing data loaded from database
-                //details.set(whichSpinner, input.getText().toString());
 
                 SavedValues.setIP(myView.getContext(), ipAddress);
 
