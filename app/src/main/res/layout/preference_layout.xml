@@ -8,12 +8,21 @@
 
     <Spinner
         android:id="@+id/preference_list"
-        android:layout_width="354dp"
+        android:layout_width="230dp"
         android:layout_height="20dp"
+        android:layout_row="0"
         android:layout_column="0"
-        android:layout_columnSpan="3"
-        android:layout_margin="10dp"
-        android:layout_row="0" />
+        android:layout_columnSpan="2"
+        android:layout_margin="10dp" />
+
+    <Button
+        android:id="@+id/add_new_pref_button"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_column="2"
+        android:layout_gravity="left"
+        android:layout_row="0"
+        android:text="Add New" />
 
     <Spinner
         android:id="@+id/spinner1"
@@ -89,13 +98,13 @@
         android:layout_row="3" />
 
     <Button
-        android:id="@+id/add_new_button"
+        android:id="@+id/set_as_active_button"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_column="0"
         android:layout_gravity="center_horizontal"
         android:layout_row="4"
-        android:text="Add New" />
+        android:text="Set As Active" />
 
     <Button
         android:id="@+id/save_button"

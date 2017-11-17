@@ -79,7 +79,7 @@ public class PreferenceFragment extends Fragment {
 
         ipAddress = SavedValues.getIP(myView.getContext());
 
-        Button newPrefButton = (Button) myView.findViewById(R.id.add_new_button);
+        Button newPrefButton = (Button) myView.findViewById(R.id.add_new_pref_button);
         Button saveButton = (Button) myView.findViewById(R.id.save_button);
 
         userID = (getArguments() != null ? getArguments().getString("UserID") : "0");
@@ -89,9 +89,6 @@ public class PreferenceFragment extends Fragment {
 
         //This will be constant
         CreateSpinners();
-
-        //Adding a listener to listen to different selections from users preferences
-        //ChangesFromDatabase();
 
         //Giving new user button on click functionality
         PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
@@ -154,14 +151,21 @@ public class PreferenceFragment extends Fragment {
     }
 
     public void CreatePreferenceSelectionList() {
-        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
+        //Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
         //Connecting to database
         //This default is required, if this list is empty, a null pointer exception will occur
-        setPreferenceList.clear();
+        //setPreferenceList.clear();
 
-        setPreferenceList.add("Default");
+        //setPreferenceList.add("Default");
+
         new GetPrefData().execute(userID);
+    }
+
+    public void ChangesFromDatabase() {
+        //We should make these globally accessable if we are going to do it like this
+
+        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(),
                 android.R.layout.simple_spinner_item, setPreferenceList);
@@ -169,13 +173,6 @@ public class PreferenceFragment extends Fragment {
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         pref_spinner.setAdapter(adapter);
-
-    }
-
-    public void ChangesFromDatabase() {
-        //We should make these globally accessable if we are going to do it like this
-
-        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
 
         PreferenceFragment.YourItemSelectedListener prefListener = new PreferenceFragment.YourItemSelectedListener();
 
@@ -241,6 +238,11 @@ public class PreferenceFragment extends Fragment {
                 spinner7.setSelection(0);
                 spinner8.setSelection(0);
                 spinner9.setSelection(0);
+
+                details.clear();
+                for (int i = 0; i < 9; i++) {
+                    details.add("Empty");
+                }
 
                 try {
                     for (int i = 0; i < jarr.length(); i++) {
@@ -459,7 +461,8 @@ public class PreferenceFragment extends Fragment {
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
-            } else {
+            }
+            else if (v.toString().contains("new_pref")) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                 builder.setTitle("New Preference");
 
@@ -488,6 +491,11 @@ public class PreferenceFragment extends Fragment {
 
                         setPreferenceList.add(newPrefListTitle);
 
+                        ChangesFromDatabase();
+
+                        Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
+                        pref_spinner.setSelection(setPreferenceList.size()-1);
+
                         //Creating default empty on new creation
                         details.clear();
                         for (int i = 0; i < 9; i++) {
@@ -505,6 +513,10 @@ public class PreferenceFragment extends Fragment {
                 });
 
                 builder.show();
+            }
+            //Set as active button
+            else {
+
             }
         }
     }
@@ -622,19 +634,18 @@ public class PreferenceFragment extends Fragment {
             //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
-                //setPreferenceList.remove("Default");
+
                 int initialSize = setPreferenceList.size();
 
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
 
-                    if (initialSize == 1) {
+                    if (initialSize == 0) {
                         setPreferenceList.add(jobj.getString("PrefName"));
                     }
                     else {
-                        setPreferenceList.set(n + 1,jobj.getString("PrefName"));
-                        //setPreferenceList.set(n,jobj.getString("PrefName"));
+                        setPreferenceList.set(n,jobj.getString("PrefName"));
                     }
                     ChangesFromDatabase();
                 }
