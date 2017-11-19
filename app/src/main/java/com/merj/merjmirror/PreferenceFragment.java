@@ -59,6 +59,7 @@ public class PreferenceFragment extends Fragment {
     static String userID = null;
     JSONObject jobj = null;
     static JSONArray jarr = null;
+    String isActive = "0";
     //Eric Home Ip address 192.168.0.6
     //James 192.168.1.107
     static String ipAddress;
@@ -80,6 +81,7 @@ public class PreferenceFragment extends Fragment {
         ipAddress = SavedValues.getIP(myView.getContext());
 
         Button newPrefButton = (Button) myView.findViewById(R.id.add_new_pref_button);
+        Button setActiveButton = (Button) myView.findViewById(R.id.set_as_active_button);
         Button saveButton = (Button) myView.findViewById(R.id.save_button);
 
         userID = (getArguments() != null ? getArguments().getString("UserID") : "0");
@@ -93,6 +95,7 @@ public class PreferenceFragment extends Fragment {
         //Giving new user button on click functionality
         PreferenceFragment.ButtonPopUpBox box = new PreferenceFragment.ButtonPopUpBox();
         newPrefButton.setOnClickListener(box);
+        setActiveButton.setOnClickListener(box);
         saveButton.setOnClickListener(box);
 
         setText(getArguments() != null ? getArguments().getString("UserName") : "No User Selected");
@@ -501,8 +504,7 @@ public class PreferenceFragment extends Fragment {
                         for (int i = 0; i < 9; i++) {
                             details.add("Empty");
                         }
-
-
+                        isActive = "0";
                     }
                 });
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -516,7 +518,11 @@ public class PreferenceFragment extends Fragment {
             }
             //Set as active button
             else {
+                isActive = "1";
 
+                Toast toast = Toast.makeText(myView.getContext(), "Please save to set as active!", Toast.LENGTH_LONG );
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         }
     }
@@ -569,7 +575,7 @@ public class PreferenceFragment extends Fragment {
         String prefName = pref_spinner.getSelectedItem().toString();
 
         //Sending data
-        new SendPrefData().execute(prefName,reparsedString,"0",userID);
+        new SendPrefData().execute(prefName,reparsedString, isActive,userID);
 
     }
 
@@ -647,6 +653,7 @@ public class PreferenceFragment extends Fragment {
                     else {
                         setPreferenceList.set(n,jobj.getString("PrefName"));
                     }
+                    isActive = jobj.getString("Active");
                     ChangesFromDatabase();
                 }
             }
