@@ -16,7 +16,7 @@ import android.widget.Spinner;
 import static android.R.attr.onClick;
 
 /**
- * Created by Eric the Barbarian and Big Jim on 9/27/2017.
+ * Created by Eric Weiss and James Gabriel on 9/27/2017.
  */
 
 public class SettingsFragment extends Fragment {

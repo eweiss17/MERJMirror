@@ -8,19 +8,15 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/* Created By Eric the Great and King James VI
-* might need to account for when the app closes and opens, certain changes must be saved*/
+/*
+ * Created By Eric Weiss and James Gabriel
+ */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, UserFragment.UserSelectedListener {
-
-    //SettingsFragment settingsFragment = new SettingsFragment();
-    //UserFragment userFragment = new UserFragment();
-    //PreferenceFragment preferenceFragment = new PreferenceFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,19 +24,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getFragmentManager();
 
-        //Eric here, doing User fragment so they can select their active user
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame
                         , new UserFragment())
                 .commit();
-        StartupRoutine();
 
         NavigationViewStart();
-    }
-
-    private void StartupRoutine() {
-        /*if needed
-        connect to mirror*/
     }
 
     private void NavigationViewStart() {
@@ -58,8 +47,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-
-
 
     @Override
     public void onBackPressed() {
@@ -80,12 +67,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -99,8 +82,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         FragmentManager fragmentManager = getFragmentManager();
-
-        //getFragmentManager().beginTransaction().add(R.id.fragment_container, fragmentToBeAdded, tag).commit();
 
         if (id == R.id.nav_user_layout) {
             fragmentManager.beginTransaction()

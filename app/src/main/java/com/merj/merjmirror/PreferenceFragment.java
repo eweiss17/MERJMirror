@@ -34,35 +34,24 @@ import database.SavedValues;
 
 
 /**
- * Created by Air-Bud on 9/27/1997.
- *
- * Work to be done here still:
- * Make a set active button.
- * Toggle? set active button on active preference (maybe do depending on how difficult this is)
- * UserInput must be translated into api format.
- *
+ * Created by Eric Weiss on 9/27/1997.
  */
 
 public class PreferenceFragment extends Fragment {
 
     View myView;
 
-    String[] UserInput = new String[7];
-    static ArrayList<String> position = new ArrayList<>();
-    static ArrayList<String> selection = new ArrayList<>();
-    static ArrayList<String> details = new ArrayList<>();;
+    ArrayList<String> position = new ArrayList<>();
+    ArrayList<String> details = new ArrayList<>();
     ArrayList setPreferenceList = new ArrayList();
     ArrayList<Object> prefSelections = new ArrayList<>();
-    //Set this to false every time you want to change all preferences at once. Then use the one 1 second delay and change it to true again.
     Boolean UserInputUnsaved = Boolean.TRUE;
     String newPrefListTitle = "";
-    static String userID = null;
+    String userID = null;
     JSONObject jobj = null;
-    static JSONArray jarr = null;
+    JSONArray jarr = null;
     String isActive = "0";
-    //Eric Home Ip address 192.168.0.6
-    //James 192.168.1.107
-    static String ipAddress;
+    String ipAddress = "";
 
     Spinner spinner1;
     Spinner spinner2;
@@ -154,13 +143,6 @@ public class PreferenceFragment extends Fragment {
     }
 
     public void CreatePreferenceSelectionList() {
-        //Spinner pref_spinner = (Spinner) myView.findViewById(R.id.preference_list);
-
-        //Connecting to database
-        //This default is required, if this list is empty, a null pointer exception will occur
-        //setPreferenceList.clear();
-
-        //setPreferenceList.add("Default");
 
         new GetPrefData().execute(userID);
     }
@@ -190,36 +172,28 @@ public class PreferenceFragment extends Fragment {
     }
 
     //Declares a class used to listen to which spinner item is selected
-    public class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
+    private class YourItemSelectedListener implements AdapterView.OnItemSelectedListener {
 
         public void onItemSelected(AdapterView<?> spinner, View view, int pos, long id) {
 
             int whichSpinner;
             if (spinner.toString().contains("spinner1")) {
                 whichSpinner = 0;
-            }
-            else if (spinner.toString().contains("spinner2")) {
+            } else if (spinner.toString().contains("spinner2")) {
                 whichSpinner = 1;
-            }
-            else if (spinner.toString().contains("spinner3")) {
+            } else if (spinner.toString().contains("spinner3")) {
                 whichSpinner = 2;
-            }
-            else if (spinner.toString().contains("spinner4")) {
+            } else if (spinner.toString().contains("spinner4")) {
                 whichSpinner = 3;
-            }
-            else if (spinner.toString().contains("spinner6")) {
+            } else if (spinner.toString().contains("spinner6")) {
                 whichSpinner = 5;
-            }
-            else if (spinner.toString().contains("spinner7")) {
+            } else if (spinner.toString().contains("spinner7")) {
                 whichSpinner = 6;
-            }
-            else if (spinner.toString().contains("spinner8")) {
+            } else if (spinner.toString().contains("spinner8")) {
                 whichSpinner = 7;
-            }
-            else if (spinner.toString().contains("spinner9")) {
+            } else if (spinner.toString().contains("spinner9")) {
                 whichSpinner = 8;
-            }
-            else {
+            } else {
                 whichSpinner = 0;
             }
 
@@ -252,8 +226,8 @@ public class PreferenceFragment extends Fragment {
 
                         ArrayList<String> selectList;
                         jobj = jarr.getJSONObject(i);
-                        if (ItemName.equals(jobj.getString("PrefName"))) {
-                            selectList = parse(jobj.getString("DataDisplay"));
+                        if (ItemName.equals(jobj.getString("prefName"))) {
+                            selectList = parse(jobj.getString("dataDisplay"));
 
                             spinner1.setSelection(Integer.parseInt(selectList.get(0)));
                             spinner2.setSelection(Integer.parseInt(selectList.get(1)));
@@ -267,7 +241,7 @@ public class PreferenceFragment extends Fragment {
                     }
                 }
                 catch (JSONException e) {
-                    Log.e("JSON Exception", e.toString());
+                    e.printStackTrace();
                 }
 
                 //The spinner listener only acts after the whole if statement is executed, thus we needed a delay.
@@ -333,11 +307,9 @@ public class PreferenceFragment extends Fragment {
                         break;
                 }
             }
-            else {}
         }
 
         public void onNothingSelected(AdapterView parent) {
-            // This needs to be included. We won't use this though.
         }
     }
 
@@ -385,12 +357,16 @@ public class PreferenceFragment extends Fragment {
                     //possible weather api format
                     //Toledo|OH
 
-                    Log.d("pastalavista", details.toString());
                     dialog.cancel();
                 }
             });
 
-            builder.setNegativeButton("Cancel", null);
+            builder.setNegativeButton("cancel",  new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
 
             builder.show();
 
@@ -440,7 +416,7 @@ public class PreferenceFragment extends Fragment {
     }
 
     //Pop up box for new preference button
-    public class ButtonPopUpBox implements AdapterView.OnClickListener {
+    private class ButtonPopUpBox implements AdapterView.OnClickListener {
         public void onClick(View v) {
             if (v.toString().contains("save_button")) {
 
@@ -463,6 +439,8 @@ public class PreferenceFragment extends Fragment {
                 Toast toast = Toast.makeText(myView.getContext(), "Preference saved!", Toast.LENGTH_SHORT );
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+
+                setPreferenceList.clear();
 
             }
             else if (v.toString().contains("new_pref")) {
@@ -562,10 +540,9 @@ public class PreferenceFragment extends Fragment {
         }
 
         for (int i = 0; i < intForm.size(); i++){
-            if (details.get(i).toString().equals("Empty")) {
+            if (details.get(i).equals("Empty")) {
                 reparsedString += holder.concat(Integer.toString(i+1) + "," + intForm.get(i) + ":");
-            }
-            else {
+            } else {
                 reparsedString += holder.concat(Integer.toString(i+1) + "," + intForm.get(i) + "(" + details.get(i) + ":");
             }
         }
@@ -601,10 +578,6 @@ public class PreferenceFragment extends Fragment {
             return sl;
     }
 
-
-
-
-
     //These classes are for database connections
     private class GetPrefData extends AsyncTask<String, Void, String> {
 
@@ -622,9 +595,8 @@ public class PreferenceFragment extends Fragment {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("UserID", params[0]);
+            put.setParam("userID", params[0]);
 
-            //EVEN THOUGH THIS IS A GET, I AM USING POST TO SPECIFY WHICH ID
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/get_preference_data.php");
             } catch (Exception e) {
@@ -634,34 +606,25 @@ public class PreferenceFragment extends Fragment {
         }
 
         protected void onPostExecute(String res) {
-            //Here you get response from server in res
             Log.d("GET Response PREF", res);
 
             //This is sorting the data into a JSON array and Object to acquire wanted data
             try {
                 jarr = new JSONArray(res);
 
-                int initialSize = setPreferenceList.size();
-
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
 
-                    if (initialSize == 0) {
-                        setPreferenceList.add(jobj.getString("PrefName"));
-                    }
-                    else {
-                        setPreferenceList.set(n,jobj.getString("PrefName"));
-                    }
-                    isActive = jobj.getString("Active");
+                    setPreferenceList.add(jobj.getString("prefName"));
+
+                    isActive = jobj.getString("active");
                     ChangesFromDatabase();
                 }
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            //adaptArray(userList);
             mProgressDialog.cancel();
         }
     }
@@ -682,10 +645,10 @@ public class PreferenceFragment extends Fragment {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("PrefName", params[0]);
-            put.setParam("DataDisplay", params[1]);
-            put.setParam("Active", params[2]);
-            put.setParam("UserId", params[3]);
+            put.setParam("prefName", params[0]);
+            put.setParam("dataDisplay", params[1]);
+            put.setParam("active", params[2]);
+            put.setParam("userID", params[3]);
 
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/set_preference_data.php");

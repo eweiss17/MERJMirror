@@ -5,10 +5,8 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.util.Log;
@@ -35,18 +33,16 @@ import database.PutUtility;
 import database.SavedValues;
 
 /**
- * Created by ??? on 9/27/2017.
+ * Created by Eric Weiss on 9/27/2017.
  */
 
 public class UserFragment extends Fragment  {
     View myView;
     UserSelectedListener mCallback;
-    final ArrayList userList = new ArrayList();
-    final ArrayList userIDList = new ArrayList();
+    ArrayList<String> userList = new ArrayList<>();
+    ArrayList<String> userIDList = new ArrayList<>();
     JSONObject jobj = null;
-    static JSONArray jarr = null;
-    //Eric Home Ip address 192.168.0.6
-    //james 192.168.1.107
+    JSONArray jarr = null;
     String ipAddress;
     Boolean IPset = false;
 
@@ -57,14 +53,11 @@ public class UserFragment extends Fragment  {
 
         ipAddress = SavedValues.getIP(myView.getContext());
 
-        //This doesn't have to be in a box. It was just a simple way to avoid conflicting with getData
-        //getData is is in here
         if (NonSavedValues.IPset == Boolean.FALSE) {
             GetIPAddressWithAPopUpBox();
             NonSavedValues.IPset = true;}
         else {new GetUserData().execute();}
 
-        //Button crap
         Button newUserButton = (Button) myView.findViewById(R.id.add_new_user_button);
         Button deleteUserButton = (Button) myView.findViewById(R.id.delete_user_button);
 
@@ -132,7 +125,7 @@ public class UserFragment extends Fragment  {
     }
 
 
-    public class MessagePopUp implements AdapterView.OnClickListener {
+    private class MessagePopUp implements AdapterView.OnClickListener {
         public void onClick(View v) {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
@@ -175,22 +168,15 @@ public class UserFragment extends Fragment  {
         }
     }
 
-    public class ListPopUp implements AdapterView.OnClickListener {
+    private class ListPopUp implements AdapterView.OnClickListener {
         public void onClick(View v) {
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(v.getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(v.getContext(), android.R.layout.select_dialog_singlechoice);
 
             arrayAdapter.addAll(userList);
 
-            builderSingle.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-
-            builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            builder.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     String user = arrayAdapter.getItem(which);
@@ -206,13 +192,20 @@ public class UserFragment extends Fragment  {
 
                 }
             });
-            builderSingle.show();
 
+            builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
         }
     }
 
     //These classes connect this fragment to main activity
-    public class UserSelected implements AdapterView.OnItemClickListener {
+    private class UserSelected implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
             String userName = list.getItemAtPosition(pos).toString();
@@ -223,7 +216,7 @@ public class UserFragment extends Fragment  {
     }
 
     public interface UserSelectedListener {
-        public void onUserSelected(String userName, String userID);
+        void onUserSelected(String userName, String userID);
     }
 
     @Override
@@ -264,7 +257,6 @@ public class UserFragment extends Fragment  {
         }
 
         protected void onPostExecute(String res) {
-            //Here you get response from server in res
             Log.d("GET Response", res);
 
             //This is sorting the data into a JSON array and Object to acquire wanted data
@@ -274,8 +266,8 @@ public class UserFragment extends Fragment  {
                 for(int n = 0; n < jarr.length(); n++)
                 {
                     jobj = jarr.getJSONObject(n);
-                    userList.add(jobj.getString("UserName"));
-                    userIDList.add(jobj.getInt("UserID"));
+                    userList.add(jobj.getString("userName"));
+                    userIDList.add(jobj.getString("userID"));
                 }
             }
             catch (JSONException e) {
@@ -296,7 +288,7 @@ public class UserFragment extends Fragment  {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("UserName", params[0].toString());
+            put.setParam("userName", params[0]);
 
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/delete_user.php");
@@ -308,7 +300,6 @@ public class UserFragment extends Fragment  {
         }
 
         protected void onPostExecute(String res) {
-            //Here you get response from server in res
             Log.v("DELETE response", res);
         }
     }
@@ -329,7 +320,7 @@ public class UserFragment extends Fragment  {
             res = null;
             PutUtility put = new PutUtility();
 
-            put.setParam("UserName", params[0].toString());
+            put.setParam("userName", params[0]);
 
             try {
                 res = put.postData("http://"+ipAddress+"/android_connect/add_user.php");
@@ -340,8 +331,11 @@ public class UserFragment extends Fragment  {
         }
 
         protected void onPostExecute(String res) {
-            //"Here you get response from server in res"
+            //response is the decided userID
             Log.v("POST response", res);
+
+            userIDList.add(res);
+
             mProgressDialog.cancel();
         }
     }

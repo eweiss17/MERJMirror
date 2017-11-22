@@ -126,8 +126,6 @@ public class PutUtility {
             } catch (Exception ex) {
             }
         }
-
-
         return response.toString();
     }
 
@@ -251,8 +249,6 @@ public class PutUtility {
                 } catch (Exception ex) {
                 }
             }
-
-
         }
         return Url;
 
