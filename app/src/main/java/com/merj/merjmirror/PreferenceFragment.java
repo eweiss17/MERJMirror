@@ -297,8 +297,9 @@ public class PreferenceFragment extends Fragment {
                     case "Stocks":
                         //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
-                        String Example4 = "AAPL";
-                        //CreateDetailsPopUpBox(BuilderTitle4, Example4, whichSpinner);
+                        String detailArray4[] = {"AAPL"};
+                        String boxType4 = "Text";
+                        CreateDetailsPopUpBox(BuilderTitle4, detailArray4, whichSpinner, boxType4);
                         break;
                     case "Clock":
                         //view.setBackground(getActivity().getDrawable(R.drawable.clock));
