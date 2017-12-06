@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.media.session.PlaybackState;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -259,50 +260,37 @@ public class PreferenceFragment extends Fragment {
             else if (UserInputUnsaved){
 
                 switch (ItemName) {
-                    //sports?
                     case "Weather":
-                        //view.setBackground(weather);
                         String BuilderTitle = "Enter Weather Location";
                         String[] detailArray = {"Toledo, OH"};
                         String boxType = "Text";
-                        CreateDetailsPopUpBox(BuilderTitle, detailArray, whichSpinner,boxType);
-                        break;
-                    case "Calendar":
-                        //view.setBackground(calendar);
+                        CreateDetailsPopUpBox(BuilderTitle, detailArray, whichSpinner, boxType);
                         break;
                     case "Horoscope":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.horoscope));
                         String BuilderTitle1 = "Select Zodiac Sign";
                         String[] detailArray1 = {"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"};
                         String boxType1 = "RadioButton";
                         CreateDetailsPopUpBox(BuilderTitle1, detailArray1, whichSpinner, boxType1);
                         break;
-                    case "Comic":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.comics));
-                        break;
                     case "News":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.news));
                         String BuilderTitle2 = "Select News Source";
                         String[] detailArray2 = {"New York Times", "Business Insider", "CNN", "ESPN", "The Independent", "IGN", "Huffington Post", "Time", "USA Today"};
                         String boxType2 = "RadioButton";
                         CreateDetailsPopUpBox(BuilderTitle2, detailArray2, whichSpinner, boxType2);
                         break;
                     case "Reminder":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.notes));
                         String BuilderTitle3 = "Enter a Reminder";
                         String detailArray3[] = {"Don't forget to buy eggs!"};
                         String boxType3 = "Text";
                         CreateDetailsPopUpBox(BuilderTitle3, detailArray3, whichSpinner, boxType3);
                         break;
                     case "Stocks":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.stocks));
                         String BuilderTitle4 = "Enter Stock Code";
                         String detailArray4[] = {"AAPL"};
                         String boxType4 = "Text";
                         CreateDetailsPopUpBox(BuilderTitle4, detailArray4, whichSpinner, boxType4);
                         break;
                     case "Clock":
-                        //view.setBackground(getActivity().getDrawable(R.drawable.clock));
                         break;
                     default:
                         break;
@@ -314,7 +302,7 @@ public class PreferenceFragment extends Fragment {
         }
     }
 
-    public void CreateDetailsPopUpBox(String BuilderTitle, final String[] detailArray, final int whichSpinner, String boxType) {
+    public void CreateDetailsPopUpBox(final String BuilderTitle, final String[] detailArray, final int whichSpinner, String boxType) {
 
         if (boxType.equals("RadioButton")){
             AlertDialog.Builder builder = new AlertDialog.Builder(myView.getContext());
@@ -340,23 +328,6 @@ public class PreferenceFragment extends Fragment {
                     else if (details.get(whichSpinner).equals("Huffington Post")) details.set(whichSpinner,"the-huffington-post");
                     else if (details.get(whichSpinner).equals("Time")) details.set(whichSpinner,"time");
                     else if (details.get(whichSpinner).equals("USA Today")) details.set(whichSpinner,"usa-today");
-
-                    // do not know api code for horoscope yet
-                    /*else if (details.get(whichSpinner).equals("Taurus")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Gemini")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Cancer")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Leo")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Virgo")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Libra")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Scorpio")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Sagittarius")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Capricorn")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Aquarius")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Pisces")) details.set(whichSpinner,"usa-today");
-                    else if (details.get(whichSpinner).equals("Aries")) details.set(whichSpinner,"usa-today");*/
-
-                    //possible weather api format
-                    //Toledo|OH
 
                     dialog.cancel();
                 }
@@ -400,6 +371,11 @@ public class PreferenceFragment extends Fragment {
                     String newDetail = input.getText().toString();
                     if (newDetail.isEmpty()){
                         newDetail = detailArray[0];
+                    }
+                    if (BuilderTitle.equals("Enter Weather Location")) {
+                        String[] newDetails = newDetail.split(",");
+                        String location = newDetails[0].trim() + "|" + newDetails[1].trim();
+                        newDetail = location;
                     }
                     details.set(whichSpinner, newDetail);
 

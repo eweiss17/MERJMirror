@@ -19,7 +19,6 @@
         <item>Horoscope</item>
         <item>Stocks</item>
         <item>Reminder</item>
-        <item>Comic</item>
     </string-array>
 
     <string-array name="time_zone_array">
